@@ -20,35 +20,58 @@ const TechProducts: React.FC = () => {
   }, []);
 
   const trending = [
-    { name: "iPhone 15 Pro", image: "/images/iphone-15.png", href: "#", tag: "Most Popular" },
-    { name: "Samsung S24 Ultra", image: "/images/samsung-s24.png", href: "#", tag: "Top Android" },
-    { name: "Google Pixel 8", image: "/images/pixel-8.png", href: "#", tag: "AI Camera" },
-    { name: "OnePlus 12", image: "/images/oneplus-12.png", href: "#", tag: "Performance" },
-  ];
+    { name: "iPhone 17 Pro Max", image: "/iphone-17-pro.jfif", href: "#", tag: "Flagship King" },
+    { name: "Samsung Galaxy S25 Ultra", image: "/samsung-s25-ultra.jfif", href: "#", tag: "Top Android" },
+    { name: "Google Pixel 10 Pro", image: "/google-pixel-10.jfif", href: "#", tag: "Next-Gen AI" },
+    { name: "OnePlus 13", image: "/iphone-13.jfif", href: "#", tag: "Ultimate Speed" },
+];
 
   const deals = [
     {
-      name: "iPhone 14 Pro Max",
-      price: "£649",
-      original: "£1099",
+      name: "iPhone 17 Pro Max",
+      price: "£1099",
+      original: "£1499",
+      rating: 4.9,
+      image: "/iphone-17-pro.jfif", // Latest Apple Flagship
+    },
+    {
+      name: "Samsung Galaxy S25 Ultra",
+      price: "£949",
+      original: "£1299",
       rating: 4.8,
-      image: "/images/iphone-14-pro-max.png",
+      image: "/samsung-s25-ultra.jfif", // Latest Samsung Flagship
     },
     {
-      name: "Samsung Galaxy S23 Ultra",
-      price: "£699",
-      original: "£1249",
+      name: "Google Pixel 10 Pro",
+      price: "£799",
+      original: "£1099",
       rating: 4.7,
-      image: "/images/s23-ultra.png",
+      image: "/google-pixel-10.jfif", // Latest Google Flagship
     },
     {
-      name: "Google Pixel 7 Pro",
-      price: "£449",
-      original: "£849",
+      name: "Samsung Galaxy Z Fold 7",
+      price: "£1399",
+      original: "£2099",
       rating: 4.6,
-      image: "/images/pixel-7-pro.png",
+      image: "/fold-7.jfif", // Latest Premium Foldable
     },
-  ];
+    {
+      name: "Xiaomi 15 Ultra",
+      price: "£699",
+      original: "£1199",
+      rating: 4.8,
+      image: "/xiaomi-15-ultra.jfif", // Latest High-End Competitor
+    },
+    {
+      name: "Google Pixel 9a",
+      price: "£349",
+      original: "£549",
+      rating: 4.5,
+      image: "/pixel-9.jfif", // Latest Top Budget Phone
+    },
+    
+    
+];
 
   return (
     <section className="py-20 bg-gradient-to-b from-white via-gray-50 to-white">

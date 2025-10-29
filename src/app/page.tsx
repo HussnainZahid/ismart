@@ -6,8 +6,9 @@ import BuybackCTA from '../components/home/BuybackCTA';
 import Tradein from '../components/home/Tradein';
 import Newsletter from '../components/home/Newsletter';
 import Refurbished from '../components/home/Refurbished';
+import Topbrands from '../components/home/Topbrands';
 
-import { testimonials } from '../lib/data'; // Removed featuredProducts import
+
 
 export default function Home() {
   return (
@@ -15,13 +16,14 @@ export default function Home() {
       <FeaturedProducts />
       <Hero />
       <Sustainability />
-      <Testimonials testimonials={testimonials} />
-      <Refurbished/>
-      <Tradein/>
+      <Testimonials />
+      <Topbrands/>
+      <Refurbished />
+      <Tradein />
       <Newsletter />
 
       <BuybackCTA />
-      
+
     </>
   );
 }

@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { ChevronLeft, ChevronRight, Check, X, Megaphone, Leaf, Zap, DollarSign, RefreshCw, Layers } from 'lucide-react'; // Professional, modern icons
 
 // --- Interfaces for TypeScript Type Checking ---
 interface Checkpoint {
-  icon: string; // Path to icon image
+  icon: React.ElementType; // Use React.ElementType for Lucide icons
   text: string;
 }
 
@@ -16,8 +17,40 @@ interface ComparisonRow {
   competitorStatus: 'check' | 'cross';
 }
 
-// --- Data for each carousel slide, matching the provided images ---
-const carouselSlides = [
+interface SlideBase {
+  id: string;
+  heading: string;
+  subheading: string | null;
+  buttonText: string | null;
+  buttonLink: string | null;
+}
+
+interface VerifiedSlide extends SlideBase {
+  type: 'verified';
+  checkpoints: Checkpoint[];
+}
+
+interface ComparisonSlide extends SlideBase {
+  type: 'comparison';
+  comparisonHeadingLeft: string;
+  comparisonHeadingRight: string;
+  comparisonRows: ComparisonRow[];
+}
+
+interface ImpactSlide extends SlideBase {
+  type: 'impact';
+}
+
+interface BenefitsSlide extends SlideBase {
+  type: 'benefits';
+  benefitsList: string[];
+}
+
+type CarouselSlide = VerifiedSlide | ComparisonSlide | ImpactSlide | BenefitsSlide;
+
+
+// --- Data for each carousel slide (Updated with Lucide icons) ---
+const carouselSlides: CarouselSlide[] = [
   // Image 1: What is Verified Refurbished?
   {
     type: 'verified',
@@ -27,15 +60,15 @@ const carouselSlides = [
     buttonText: 'Learn more',
     buttonLink: '/verified-refurbished',
     checkpoints: [
-      { icon: '/images/magnifying-glass.svg', text: '25-point professional inspection' },
-      { icon: '/images/shield.svg', text: 'Strict Quality Charter that protects you' },
-      { icon: '/images/factory.svg', text: 'Vetted refurbishers' },
-      { icon: '/images/flask.svg', text: 'Innovation Lab' },
-      { icon: '/images/warranty.svg', text: 'Free warranty with every purchase' },
-      { icon: '/images/return.svg', text: '30 days to change your mind' },
+      { icon: Zap, text: '25-point professional inspection' },
+      { icon: Layers, text: 'Strict Quality Charter that protects you' },
+      { icon: RefreshCw, text: 'Vetted refurbishers' },
+      { icon: Leaf, text: 'Innovation Lab' },
+      { icon: DollarSign, text: 'Free warranty with every purchase' },
+      { icon: RefreshCw, text: '30 days to change your mind' },
     ],
   },
-  // Image 2: Back Market is better than used.
+  // Image 2: ISmart is better than used.
   {
     type: 'comparison',
     id: 'slide2',
@@ -43,7 +76,7 @@ const carouselSlides = [
     subheading: 'Verified Refurbished vs used mobiles.',
     buttonText: 'Learn more',
     buttonLink: '/compare-used',
-    comparisonHeadingLeft: 'Back Market',
+    comparisonHeadingLeft: 'ISmart', // Changed to ISmart for consistency
     comparisonHeadingRight: 'Used tech',
     comparisonRows: [
       { label: 'Professionally refurbished', backMarketStatus: 'check', competitorStatus: 'cross' },
@@ -52,7 +85,7 @@ const carouselSlides = [
       { label: 'Pay-as-you-go', backMarketStatus: 'check', competitorStatus: 'cross' },
     ],
   },
-  // Image 3: Back Market is better than new.
+  // Image 3: ISmart is better than new.
   {
     type: 'comparison',
     id: 'slide3',
@@ -60,7 +93,7 @@ const carouselSlides = [
     subheading: 'Verified Refurbished vs new mobiles.',
     buttonText: 'See how',
     buttonLink: '/compare-new',
-    comparisonHeadingLeft: 'Back Market',
+    comparisonHeadingLeft: 'ISmart', // Changed to ISmart for consistency
     comparisonHeadingRight: 'New',
     comparisonRows: [
       { label: '92% less CO2 emissions', backMarketStatus: 'check', competitorStatus: 'cross' },
@@ -80,67 +113,149 @@ const carouselSlides = [
   },
   // Image 5: Save today and tomorrow.
   {
-    type: 'benefits',
-    id: 'slide5',
-    heading: 'Save <span class="highlight">today and tomorrow.</span>',
-    subheading: null, // No subheading for this slide
-    buttonText: null, // No button for this slide
-    benefitsList: [
-      'Up to 50% less than new',
-      'Up to £1,480 when you trade in old tech',
-      'Pay-as-you-go options',
-      'Protection plans for your device',
-    ],
-  },
+  type: 'benefits',
+  id: 'slide5',
+  heading: 'Save <span class="highlight">today and tomorrow.</span>',
+  subheading: null, 
+  buttonText: null,
+  buttonLink: null, 
+  benefitsList: [
+    'Up to 50% less than new',
+    'Up to £1,480 when you trade in old tech',
+    'Pay-as-you-go options',
+    'Protection plans for your device',
+  ],
+},
 ];
 
-// --- Helper component for Check/Cross icons ---
-const CheckCrossIcon: React.FC<{ status: 'check' | 'cross' }> = ({ status }) => (
-  <Image
-    src={status === 'check' ? '/images/check-icon.svg' : '/images/cross-icon.svg'} // Placeholder paths
-    alt={status === 'check' ? 'Checkmark' : 'Cross'}
-    width={16}
-    height={16}
-    className={status === 'check' ? 'text-green-500' : 'text-red-500'}
-  />
-);
+// --- Sub-Components (Clean Separation) ---
+
+/**
+ * Renders the Check or Cross icon based on status.
+ * Uses Lucide icons for a professional look.
+ */
+const CheckCrossIcon: React.FC<{ status: 'check' | 'cross' }> = ({ status }) => {
+    const Icon = status === 'check' ? Check : X;
+    const colorClass = status === 'check' ? 'text-green-600' : 'text-red-500';
+    return (
+        <Icon className={`w-5 h-5 ${colorClass}`} aria-hidden="true" />
+    );
+};
+
+/**
+ * Renders the content for a single carousel slide based on its type.
+ */
+const SlideContent: React.FC<{ slide: CarouselSlide }> = ({ slide }) => {
+  const commonClasses = "w-full md:w-1/2 flex justify-center md:justify-start";
+
+  if (slide.type === 'verified' && 'checkpoints' in slide) {
+    return (
+      <div className={`${commonClasses} order-1 md:order-2`}>
+        <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-sm border border-gray-100">
+          <ul className="space-y-4">
+            {slide.checkpoints.map((cp, cpIndex) => {
+              const Icon = cp.icon;
+              return (
+                <li key={cpIndex} className="flex items-start text-gray-800 text-lg">
+                  <Icon className="w-6 h-6 mr-3 flex-shrink-0 text-[#8B679B]" aria-hidden="true" />
+                  <span>{cp.text}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+    );
+  }
+
+  if (slide.type === 'comparison' && 'comparisonRows' in slide) {
+    return (
+      <div className={`${commonClasses} order-1 md:order-2`}>
+        <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-sm border border-gray-100">
+          <div className="grid grid-cols-[1fr_40px_40px] gap-x-6 gap-y-4 items-center text-lg font-bold text-[#4A2D5C] mb-4 pb-3 border-b-2 border-[#8B679B]">
+            <div></div> {/* Empty for alignment */}
+            <div className="text-center">{slide.comparisonHeadingLeft}</div>
+            <div className="text-center">{slide.comparisonHeadingRight}</div>
+          </div>
+          <ul className="space-y-4">
+            {slide.comparisonRows.map((row, rowIndex) => (
+              <li key={rowIndex} className="grid grid-cols-[1fr_40px_40px] gap-x-6 items-center text-gray-700">
+                <span>{row.label}</span>
+                <div className="flex justify-center"><CheckCrossIcon status={row.backMarketStatus} /></div>
+                <div className="flex justify-center"><CheckCrossIcon status={row.competitorStatus} /></div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    );
+  }
+
+  if (slide.type === 'benefits' && 'benefitsList' in slide) {
+    return (
+      <div className={`${commonClasses} order-1 md:order-2`}>
+        <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-sm border border-gray-100">
+          <ul className="space-y-4">
+            {slide.benefitsList.map((benefit, bIndex) => (
+              <li key={bIndex} className="flex items-start text-gray-800 text-lg">
+                <DollarSign className="w-5 h-5 mr-3 mt-1 flex-shrink-0 text-green-600" aria-hidden="true" />
+                <span>{benefit}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    );
+  }
+  
+  // For 'impact' or slides with no specific right content
+  return <div className={`${commonClasses} hidden md:block w-full md:w-1/2 order-1 md:order-2`}></div>;
+};
+
 
 // --- Main Carousel Component ---
 const VerifiedRefurbishedCarousel: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const totalSlides = carouselSlides.length;
 
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % totalSlides);
-  };
+  }, [totalSlides]);
 
-  const prevSlide = () => {
+  const prevSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
-  };
+  }, [totalSlides]);
 
-  // Calculate the transform value for the slide track
-  const translateValue = `calc(-${currentSlide * 100}%)`;
+  // Use useMemo for the dynamic style to ensure stability
+  const translateStyle = useMemo(() => ({
+    transform: `translateX(calc(-${currentSlide * 100}%))`,
+  } as React.CSSProperties), [currentSlide]);
 
   return (
-    <section className="bg-gray-100 py-16">
+    <section className="bg-gray-100 py-16" aria-label="Verified Refurbished Carousel">
       <div className="container mx-auto px-4 max-w-6xl">
-        <div className="relative overflow-hidden rounded-2xl shadow-lg bg-[#F8F5EF] min-h-[480px]">
+        <div className="relative overflow-hidden rounded-3xl shadow-2xl bg-[#F8F5EF] min-h-[480px]">
+          
           {/* Main Slide Track */}
           <div
             className="flex w-full transition-transform duration-700 ease-in-out"
-            style={{
-              transform: `translateX(${translateValue})`,
-              '--tw-translate-x': translateValue, // For Tailwind JIT if needed
-            } as React.CSSProperties}
+            style={translateStyle}
           >
             {carouselSlides.map((slide, index) => (
-              <div key={slide.id} className="flex-shrink-0 w-full p-8 md:p-12 flex items-center justify-center">
-                {/* Each Slide Content */}
+              <div 
+                key={slide.id} 
+                className="flex-shrink-0 w-full p-8 md:p-12 flex items-center justify-center"
+                role="tabpanel"
+                id={slide.id}
+                aria-hidden={index !== currentSlide}
+              >
+                {/* Slide Content */}
                 <div className="flex flex-col md:flex-row items-center md:items-start gap-12 w-full">
-                  {/* Left Side: Heading, Subheading, Button */}
-                  <div className="w-full md:w-1/2 text-center md:text-left">
+                  
+                  {/* Left Side: Heading, Subheading, Button (order-2 on small screens) */}
+                  <div className="w-full md:w-1/2 text-center md:text-left order-2 md:order-1">
                     <h2
-                      className="font-serif text-5xl font-bold text-[#4A2D5C] mb-4 leading-tight [&>.highlight]:bg-yellow-200 [&>.highlight]:px-1 [&>.highlight]:-mx-1 [&>.highlight]:rounded"
+                      className="font-serif text-4xl sm:text-5xl font-extrabold text-[#4A2D5C] mb-4 leading-tight [&>.highlight]:bg-[#FFDD57] [&>.highlight]:px-2 [&>.highlight]:-mx-2 [&>.highlight]:rounded-lg"
                       dangerouslySetInnerHTML={{ __html: slide.heading }}
                     ></h2>
                     {slide.subheading && (
@@ -151,109 +266,60 @@ const VerifiedRefurbishedCarousel: React.FC = () => {
                     {slide.buttonText && (
                       <Link
                         href={slide.buttonLink || '#'}
-                        className="inline-flex items-center justify-center font-semibold text-white bg-[#4A2D5C] hover:bg-[#5C3D70] active:bg-[#3A2247] px-8 py-3 rounded-full shadow-lg transition-all duration-200 text-lg"
+                        className="inline-flex items-center justify-center font-bold text-white bg-[#4A2D5C] hover:bg-[#5C3D70] active:bg-[#3A2247] px-8 py-3 rounded-full shadow-lg transition-all duration-200 text-lg tracking-wider"
                       >
                         {slide.buttonText}
                       </Link>
                     )}
                   </div>
 
-                  {/* Right Side: Specific Content for each slide type */}
-                  <div className="w-full md:w-1/2 flex justify-center md:justify-start">
-                    {slide.type === 'verified' && slide.checkpoints && (
-                      <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-md">
-                        <ul className="space-y-4">
-                          {slide.checkpoints.map((cp, cpIndex) => (
-                            <li key={cpIndex} className="flex items-center text-gray-800 text-lg">
-                              {cp.icon && (
-                                <Image src={cp.icon} alt="" width={24} height={24} className="mr-3 flex-shrink-0" />
-                              )}
-                              <span>{cp.text}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+                  {/* Right Side: Specific Content for each slide type (order-1 on small screens) */}
+                  <SlideContent slide={slide} />
 
-                    {slide.type === 'comparison' && slide.comparisonRows && (
-                      <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-md">
-                        <div className="grid grid-cols-[1fr_auto_auto] gap-x-4 gap-y-3 items-center text-lg font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
-                          <div></div> {/* Empty for alignment */}
-                          <div className="text-center">{slide.comparisonHeadingLeft}</div>
-                          <div className="text-center">{slide.comparisonHeadingRight}</div>
-                        </div>
-                        <ul className="space-y-4">
-                          {slide.comparisonRows.map((row, rowIndex) => (
-                            <li key={rowIndex} className="grid grid-cols-[1fr_auto_auto] gap-x-4 items-center text-gray-700">
-                              <span>{row.label}</span>
-                              <div className="flex justify-center"><CheckCrossIcon status={row.backMarketStatus} /></div>
-                              <div className="flex justify-center"><CheckCrossIcon status={row.competitorStatus} /></div>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {slide.type === 'impact' && (
-                      // No specific right content for impact slide, text is left-aligned
-                      <div className="hidden md:block w-full md:w-1/2"></div>
-                    )}
-
-                    {slide.type === 'benefits' && slide.benefitsList && (
-                      <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-md">
-                        <ul className="space-y-4">
-                          {slide.benefitsList.map((benefit, bIndex) => (
-                            <li key={bIndex} className="flex items-center text-gray-800 text-lg">
-                              <span className="w-2 h-2 bg-gray-400 rounded-full mr-3 flex-shrink-0"></span>
-                              <span>{benefit}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Carousel Controls */}
-          <div className="absolute bottom-4 left-4 flex space-x-2">
-            {carouselSlides.map((_, index) => (
+          {/* Controls Container */}
+          <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center">
+            
+            {/* Dot Indicators (Left) */}
+            <div className="flex space-x-2" role="tablist">
+              {carouselSlides.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentSlide(index)}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                    index === currentSlide ? 'bg-[#4A2D5C] w-6' : 'bg-gray-400 hover:bg-gray-500'
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                  role="tab"
+                  aria-controls={carouselSlides[index].id}
+                  aria-selected={index === currentSlide}
+                />
+              ))}
+            </div>
+
+            {/* Previous/Next Buttons (Right) */}
+            <div className="flex space-x-3">
               <button
-                key={index}
-                onClick={() => setCurrentSlide(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === currentSlide ? 'bg-[#4A2D5C] w-6' : 'bg-gray-400 hover:bg-gray-500'
-                }`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
+                onClick={prevSlide}
+                aria-label="Previous slide"
+                className="w-10 h-10 rounded-full bg-white hover:bg-gray-200 flex items-center justify-center text-[#4A2D5C] transition-colors shadow-lg border border-gray-300"
+              >
+                <ChevronLeft className="w-5 h-5" aria-hidden="true" />
+              </button>
+              <button
+                onClick={nextSlide}
+                aria-label="Next slide"
+                className="w-10 h-10 rounded-full bg-[#4A2D5C] hover:bg-[#5C3D70] flex items-center justify-center text-white transition-colors shadow-lg"
+              >
+                <ChevronRight className="w-5 h-5" aria-hidden="true" />
+              </button>
+            </div>
           </div>
-
-          <div className="absolute bottom-4 right-4 flex space-x-2">
-            {/* Previous Button */}
-            <button
-              onClick={prevSlide}
-              aria-label="Previous slide"
-              className="w-10 h-10 rounded-full bg-gray-900 hover:bg-black flex items-center justify-center text-white transition-colors shadow-lg"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-
-            {/* Next Button */}
-            <button
-              onClick={nextSlide}
-              aria-label="Next slide"
-              className="w-10 h-10 rounded-full bg-gray-900 hover:bg-black flex items-center justify-center text-white transition-colors shadow-lg"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
+          
         </div>
       </div>
     </section>

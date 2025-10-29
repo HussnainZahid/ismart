@@ -27,8 +27,8 @@
       "@/*": [
         "./src/*"
       ]
-    },
-    "ignoreDeprecations": "6.0" // ADD THIS LINE
+    }
+    /* The problematic "ignoreDeprecations" line is now completely removed. */
   },
   "include": [
     "next-env.d.ts",
@@ -37,6 +37,7 @@
     ".next/types/**/*.ts",
     "src/types/**/*",
     "css.d.ts",
+    ".next/dev/types/**/*.ts",
     ".next\\dev/types/**/*.ts",
     ".next\\dev/types/**/*.ts"
   ],
