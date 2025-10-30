@@ -104,7 +104,7 @@ const NAV_ITEMS: Readonly<NavItem[]> = [
 const TOP_BAR_ITEMS: Readonly<TopBarItem[]> = [
   { label: "Verified Refurbished", icon: CheckCircle, color: "text-green-600", href: "/verified-refurbished" },
   { label: "Repair & Care", icon: Wrench, href: "/page-repair" },
-  { label: "End Fast Tech", icon: Leaf, color: "text-emerald-600", href: "/end-fast-tech" },
+  { label: "End Fast Tech", icon: Leaf, color: "text-emerald-600", href: "/page-tech" },
   { label: "Tech Journal", icon: Newspaper, href: "/tech-journal" },
 ] as const;
 

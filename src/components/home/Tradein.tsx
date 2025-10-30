@@ -219,7 +219,7 @@ const TradeInSection: React.FC = () => {
                   rectify or delete your data.
                 </p>
                 <p>
-                  <a href="#privacy" className="font-bold text-gray-800 underline hover:text-purple-600 transition">
+                  <a href="page-privacy" className="font-bold text-gray-800 underline hover:text-purple-600 transition">
                     For more details, please refer to our privacy policy.
                   </a>
                 </p>
