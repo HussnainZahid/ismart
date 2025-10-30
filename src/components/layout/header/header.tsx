@@ -97,13 +97,13 @@ const COUNTRIES: Readonly<Country[]> = [
 
 const NAV_ITEMS: Readonly<NavItem[]> = [
   { href: "#good-deals", label: "Flash Deals", icon: Zap, color: "text-orange-600", badge: "Hot" },
-  { href: "/smartphones", label: "Smartphones", icon: Phone, hasMegaMenu: true, megaMenu: "smartphones" },
+  { href: "/page-smartphone", label: "Smartphones", icon: Phone, hasMegaMenu: true, megaMenu: "smartphones" },
   { href: "/more", label: "More", icon: Grid, hasMegaMenu: true, megaMenu: "more" },
 ] as const;
 
 const TOP_BAR_ITEMS: Readonly<TopBarItem[]> = [
   { label: "Verified Refurbished", icon: CheckCircle, color: "text-green-600", href: "/verified-refurbished" },
-  { label: "Repair & Care", icon: Wrench, href: "/repair-care" },
+  { label: "Repair & Care", icon: Wrench, href: "/page-repair" },
   { label: "End Fast Tech", icon: Leaf, color: "text-emerald-600", href: "/end-fast-tech" },
   { label: "Tech Journal", icon: Newspaper, href: "/tech-journal" },
 ] as const;

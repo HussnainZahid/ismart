@@ -25,16 +25,16 @@ interface Product {
 const mockMobileBrands: MobileBrand[] = [
   { name: "All Brands", logoUrl: "/All.png", alt: "All Brands" }, 
   { name: "Apple", logoUrl: "/Apple.png", alt: "Apple Logo" },
-  { name: "Samsung", logoUrl: "https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg", alt: "Samsung Logo" },
-  { name: "Google", logoUrl: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg", alt: "Google Logo" },
-  { name: "Xiaomi", logoUrl: "https://upload.wikimedia.org/wikipedia/commons/a/ae/Xiaomi_logo_%282021-%29.svg", alt: "Xiaomi Logo" },
-  { name: "OnePlus", logoUrl: "https://upload.wikimedia.org/wikipedia/commons/e/e0/OnePlus_Logo.svg", alt: "OnePlus Logo" },
+  { name: "Samsung", logoUrl: "/samsung.png", alt: "Samsung Logo" },
+  { name: "Google", logoUrl: "/google.png", alt: "Google Logo" },
+  { name: "Xiaomi", logoUrl: "/xiaomi.png", alt: "Xiaomi Logo" },
+  { name: "OnePlus", logoUrl: "/oneplus.png", alt: "OnePlus Logo" },
 ];
 
 const mockProducts: Product[] = [
   {
     id: "1",
-    imageUrl: "https://images.unsplash.com/photo-1678881260408-724f8d5e182e?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    imageUrl: "/14-pro-max.jfif",
     name: "Apple iPhone 14 Pro Max 128GB - Deep Purple",
     rating: 4.8,
     reviews: 25,
@@ -44,7 +44,7 @@ const mockProducts: Product[] = [
   },
   {
     id: "2",
-    imageUrl: "https://images.unsplash.com/photo-1678881260408-724f8d5e182e?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    imageUrl: "/s23.jfif",
     name: "Samsung Galaxy S23 Ultra 256GB - Phantom Black",
     rating: 4.7,
     reviews: 18,
@@ -54,7 +54,7 @@ const mockProducts: Product[] = [
   },
   {
     id: "3",
-    imageUrl: "https://images.unsplash.com/photo-1678881260408-724f8d5e182e?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    imageUrl: "google-pixel-7a.jfif",
     name: "Google Pixel 7 Pro 128GB - Obsidian",
     rating: 4.6,
     reviews: 12,
@@ -64,7 +64,7 @@ const mockProducts: Product[] = [
   },
   {
     id: "4",
-    imageUrl: "https://images.unsplash.com/photo-1678881260408-724f8d5e182e?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    imageUrl: "xiaomi-13.jfif",
     name: "Xiaomi 13 Ultra 512GB - Black",
     rating: 4.5,
     reviews: 8,
@@ -75,7 +75,7 @@ const mockProducts: Product[] = [
   // Added more products for better filtering demo
   {
     id: "5",
-    imageUrl: "https://images.unsplash.com/photo-1678881260408-724f8d5e182e?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    imageUrl: "/iphone se.jfif",
     name: "Apple iPhone SE (2022) 64GB - Midnight",
     rating: 4.4,
     reviews: 30,
@@ -85,7 +85,7 @@ const mockProducts: Product[] = [
   },
   {
     id: "6",
-    imageUrl: "https://images.unsplash.com/photo-1678881260408-724f8d5e182e?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    imageUrl: "/galaxy-z-fold.jfif",
     name: "Samsung Galaxy Z Fold4 512GB - Beige",
     rating: 4.9,
     reviews: 15,
@@ -93,10 +93,21 @@ const mockProducts: Product[] = [
     oldPrice: 1799.00,
     brand: "Samsung",
   },
+  {
+  id: "7",
+  imageUrl: "/one-plus-12-pro.jfif",
+  name: "OnePlus 12 256GB - Flowy Emerald",
+  rating: 4.8,
+  reviews: 22,
+  currentPrice: 899.99,
+  oldPrice: 999.99,
+  brand: "OnePlus",
+},
+
 ];
 
 
-// Helper for Star Icon (for product ratings)
+
 const StarIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     {...props}
@@ -175,6 +186,7 @@ const TopBrands: React.FC = () => {
                           : 'bg-white text-gray-700 shadow-lg hover:shadow-xl hover:ring-2 ring-gray-200'
                       }
                   `}
+                  aria-label={`Filter by ${brand.name}`}
                   >
                   <img
                       src={brand.logoUrl}
@@ -194,32 +206,34 @@ const TopBrands: React.FC = () => {
             
             {/* Main Content: Hero Image and Products Carousel */}
             <div className="flex flex-col lg:flex-row gap-10">
-              {/* Left Column: Hero Device */}
+              {/* Left Column: Hero Device (NOW LINKED) */}
               <div className="flex-shrink-0 w-full lg:w-2/5 xl:w-1/3 space-y-8">
-                {/* Hero Image Block */}
-                <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl bg-gray-900 transition-all duration-300 hover:shadow-purple-400/50">
-                  {/* Hero Image */}
-                  <img
-                    src="https://images.unsplash.com/photo-1556656793-085378771383?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="Refurbished Mobile Device Highlight"
-                    className="absolute inset-0 w-full h-full object-cover opacity-80"
-                  />
-                  {/* Deal Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent p-6 flex flex-col justify-end z-10">
-                    <h3 className="text-xl font-bold text-white mb-2">iPhone 14 Pro Max</h3>
-                    <p className="text-sm text-gray-200 mb-4">
-                      Fully certified refurbishment, pristine condition.
-                    </p>
-                    <div className="flex items-center space-x-3">
-                        <span className="text-3xl font-extrabold text-green-300">
-                          Up to 40% Off
-                        </span>
-                        <span className="text-xs text-white bg-purple-600 px-3 py-1 rounded-full">
-                          Best Deal
-                        </span>
+                {/* Link wrapper for the hero block */}
+                <a href="/products/featured-deal" className="block focus:outline-none focus:ring-4 focus:ring-purple-400 rounded-3xl">
+                    <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl bg-gray-900 transition-all duration-300 hover:shadow-purple-400/50">
+                        {/* Hero Image */}
+                        <img
+                            src="/phones.png"
+                            alt="Refurbished Mobile Device Highlight"
+                            className="absolute inset-0 w-full h-full object-cover opacity-80"
+                        />
+                        {/* Deal Overlay (RESTORED WITH LINK HINTS) */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent p-6 flex flex-col justify-end z-10">
+                            <h3 className="text-xl font-bold text-white mb-2">Refurbished Mobile Deals</h3>
+                            <p className="text-sm text-gray-300 mb-4">
+                                Pristine condition, guaranteed. Click to view our top offers.
+                            </p>
+                            <div className="flex items-center space-x-3">
+                                <span className="text-2xl font-extrabold text-green-300">
+                                    Shop Now
+                                </span>
+                                <span className="text-xs text-white bg-purple-600 px-3 py-1 rounded-full">
+                                    Up to 40% Off
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                </div>
+                </a>
               </div>
 
 
@@ -235,6 +249,7 @@ const TopBrands: React.FC = () => {
                         <button 
                             onClick={() => setActiveBrand("All Brands")} 
                             className="mt-4 text-purple-600 font-medium hover:underline"
+                            aria-label="Show all mobile devices"
                         >
                             Show All Devices
                         </button>
@@ -246,49 +261,50 @@ const TopBrands: React.FC = () => {
                         className="flex space-x-6 overflow-x-scroll no-scrollbar py-2"
                     >
                         {filteredProducts.map((product: Product) => (
-                        <div
+                        <a 
                             key={product.id}
-                            className="flex-shrink-0 w-72 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100"
+                            href={`/product/${product.id}`} // ADDED DYNAMIC LINK
+                            className="flex-shrink-0 w-72 bg-white rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 overflow-hidden border border-gray-100 group focus:outline-none focus:ring-4 focus:ring-purple-400"
                         >
-                            <div className="relative w-full h-44 bg-gray-50 flex items-center justify-center">
-                            <img
-                                src={product.imageUrl}
-                                alt={product.name}
-                                width={180} // Standard img attributes for sizing
-                                height={180} // Standard img attributes for sizing
-                                className="object-contain"
-                            />
+                            <div className="relative w-full h-44 bg-gray-50 flex items-center justify-center overflow-hidden">
+                                <img
+                                    src={product.imageUrl}
+                                    alt={product.name}
+                                    width={180} // Standard img attributes for sizing
+                                    height={180} // Standard img attributes for sizing
+                                    className="object-contain transition-transform duration-500 group-hover:scale-105"
+                                />
                             </div>
                             <div className="p-5 space-y-2">
-                            <p className="text-base font-semibold text-gray-900 line-clamp-2">
-                                {product.name}
-                            </p>
-                            <div className="flex items-center text-xs text-gray-500">
-                                {/* Star Rating Display */}
-                                <div className="flex mr-2">
-                                    {[...Array(5)].map((_, i) => (
-                                        <StarIcon 
-                                            key={i} 
-                                            className={`w-3 h-3 ${i < Math.floor(product.rating) ? 'text-yellow-500' : 'text-gray-300'}`} 
-                                        />
-                                    ))}
+                                <p className="text-base font-semibold text-gray-900 line-clamp-2">
+                                    {product.name}
+                                </p>
+                                <div className="flex items-center text-xs text-gray-500">
+                                    {/* Star Rating Display */}
+                                    <div className="flex mr-2">
+                                        {[...Array(5)].map((_, i) => (
+                                            <StarIcon 
+                                                key={i} 
+                                                className={`w-3 h-3 ${i < Math.floor(product.rating) ? 'text-yellow-500' : 'text-gray-300'}`} 
+                                            />
+                                        ))}
+                                    </div>
+                                    <span>{product.rating.toFixed(1)}</span>
+                                    <span className="mx-2">•</span>
+                                    <span>{product.reviews} reviews</span>
                                 </div>
-                                <span>{product.rating.toFixed(1)}</span>
-                                <span className="mx-2">•</span>
-                                <span>{product.reviews} reviews</span>
+                                
+                                {/* Price Block */}
+                                <div className="flex flex-col pt-1">
+                                    <span className="text-xl font-bold text-purple-600">
+                                    £{product.currentPrice.toFixed(2)}
+                                    </span>
+                                    <span className="text-sm text-gray-400 line-through">
+                                    £{product.oldPrice.toFixed(2)} new
+                                    </span>
+                                </div>
                             </div>
-                            
-                            {/* Price Block */}
-                            <div className="flex flex-col pt-1">
-                                <span className="text-xl font-bold text-purple-600">
-                                £{product.currentPrice.toFixed(2)}
-                                </span>
-                                <span className="text-sm text-gray-400 line-through">
-                                £{product.oldPrice.toFixed(2)} new
-                                </span>
-                            </div>
-                            </div>
-                        </div>
+                        </a>
                         ))}
                     </div>
 
