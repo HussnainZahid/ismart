@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import React, { useState, useEffect, useRef, Dispatch, SetStateAction, ReactNode, JSXElementConstructor } from 'react';
+import React, { useState, useEffect, useRef, Dispatch, SetStateAction, ReactNode } from 'react';
 import { Menu, X, ChevronRight } from 'lucide-react';
 
 // =====================================================================
@@ -38,7 +38,7 @@ interface LegalBasisDataMap {
 
 /** Defines the structure for a single section or subsection in the policy. */
 interface PolicySection {
-    id: string; // Used for active links and references
+    id: string;
     title: string;
     subsections?: PolicySection[];
 }
@@ -47,8 +47,8 @@ interface PolicySection {
 // === 2. MOCK POLICY DATA (Typed) =====================================
 // =====================================================================
 
-// Data for the Table of Contents and main section headings
-export const POLICY_SECTIONS: PolicySection[] = [
+// REMOVED export keyword here
+const POLICY_SECTIONS: PolicySection[] = [
     {
         id: 'controller',
         title: '1. WHO IS THE CONTROLLER OF YOUR PERSONAL DATA?',
@@ -151,22 +151,77 @@ const LEGAL_BASIS_TABLES: LegalBasisDataMap = {
 
 // Data Protection Authorities
 const DP_AUTHORITIES: DataProtectionAuthority[] = [
-    { country: 'FRANCE', authority: 'Commission nationale de l’informatique et des libertés (CNIL)', website: 'https://www.cnil.fr' },
-    { country: 'GERMANY', authority: 'Jurisdiction between data protection authorities is allocated by Länder. To find out which authorities are responsible, please see the list provided by the Bundesbeauftragte für den Datenschutz und die Informationsfreiheit.', website: 'https://www.bfdi.bund.de/DE/Service/Anschriften/Laender/Laender-node.html' },
-    { country: 'AUSTRIA', authority: 'Österreichische Datenschutzbehörde.', website: 'http://www.dsb.gv.at' },
-    { country: 'BELGIUM', authority: 'Autorité de la protection des données - Gegevensbeschermingsautoriteit (APD-GBA)', website: 'https://www.autoriteprotectiondonnees.be' },
-    { country: 'SPAIN', authority: 'Agencia Española de Protección de Datos (AEPD)', website: 'http://www.aepd.es/agpd/' },
-    { country: 'FINLAND', authority: 'Office of the Data Protection Ombudsman', website: 'http://www.tietosuoja.fi/en/' },
-    { country: 'GREECE', authority: 'Hellenic Data Protection Authority', website: 'http://www.dpa.gr' },
-    { country: 'IRELAND', authority: 'Data Protection Commission', website: 'http://www.dataprotection.ie' },
-    { country: 'ITALY', authority: 'Garante per la protezione dei dati personali', website: 'http://www.garanteprivacy.it' },
-    { country: 'NETHERLANDS', authority: 'Autoriteit Persoonsgegevens', website: 'http://autoriteitpersoonsgegevens.nl' },
-    { country: 'PORTUGAL', authority: 'Comissão Nacional de Proteção de Dados (CNPD)', website: 'http://www.cnpd.pt' },
-    { country: 'UNITED KINGDOM', authority: 'Information Commissioner’s Office (ICO)', website: 'http://ico.org.uk' },
-    { country: 'SLOVAKIA', authority: 'Office for Personal Data Protection of the Slovak Republic', website: 'http://www.dataprotection.gov.sk' },
-    { country: 'SWEDEN', authority: 'Integritetsskyddsmyndigheten', website: 'http://www.imy.se' },
+    { 
+        country: 'FRANCE', 
+        authority: 'Commission nationale de l\'informatique et des libertés (CNIL)', 
+        website: 'https://www.cnil.fr' 
+    },
+    { 
+        country: 'GERMANY', 
+        authority: 'Jurisdiction between data protection authorities is allocated by Länder. To find out which authorities are responsible, please see the list provided by the Bundesbeauftragte für den Datenschutz und die Informationsfreiheit.', 
+        website: 'https://www.bfdi.bund.de/DE/Service/Anschriften/Laender/Laender-node.html' 
+    },
+    { 
+        country: 'AUSTRIA', 
+        authority: 'Österreichische Datenschutzbehörde.', 
+        website: 'http://www.dsb.gv.at' 
+    },
+    { 
+        country: 'BELGIUM', 
+        authority: 'Autorité de la protection des données - Gegevensbeschermingsautoriteit (APD-GBA)', 
+        website: 'https://www.autoriteprotectiondonnees.be' 
+    },
+    { 
+        country: 'SPAIN', 
+        authority: 'Agencia Española de Protección de Datos (AEPD)', 
+        website: 'http://www.aepd.es/agpd/' 
+    },
+    { 
+        country: 'FINLAND', 
+        authority: 'Office of the Data Protection Ombudsman', 
+        website: 'http://www.tietosuoja.fi/en/' 
+    },
+    { 
+        country: 'GREECE', 
+        authority: 'Hellenic Data Protection Authority', 
+        website: 'http://www.dpa.gr' 
+    },
+    { 
+        country: 'IRELAND', 
+        authority: 'Data Protection Commission', 
+        website: 'http://www.dataprotection.ie' 
+    },
+    { 
+        country: 'ITALY', 
+        authority: 'Garante per la protezione dei dati personali', 
+        website: 'http://www.garanteprivacy.it' 
+    },
+    { 
+        country: 'NETHERLANDS', 
+        authority: 'Autoriteit Persoonsgegevens', 
+        website: 'http://autoriteitpersoonsgegevens.nl' 
+    },
+    { 
+        country: 'PORTUGAL', 
+        authority: 'Comissão Nacional de Proteção de Dados (CNPD)', 
+        website: 'http://www.cnpd.pt' 
+    },
+    { 
+        country: 'UNITED KINGDOM', 
+        authority: 'Information Commissioner\'s Office (ICO)', 
+        website: 'http://ico.org.uk' 
+    },
+    { 
+        country: 'SLOVAKIA', 
+        authority: 'Office for Personal Data Protection of the Slovak Republic', 
+        website: 'http://www.dataprotection.gov.sk' 
+    },
+    { 
+        country: 'SWEDEN', 
+        authority: 'Integritetsskyddsmyndigheten', 
+        website: 'http://www.imy.se' 
+    },
 ];
-
 // Glossary Terms
 const GLOSSARY_TERMS: GlossaryTerm[] = [
     { term: 'Cookie', definition: 'Means a small computer file, a tracer, that is placed on your device and read, e.g., when you browse a website, open an e-mail, or install or use a software or mobile application, regardless of the type of device used (computer, smartphone, etc.).' },
@@ -187,9 +242,6 @@ interface PolicyTableProps {
     data: LegalBasisItem[];
 }
 
-/**
- * Component for the two-column Purpose/Legal Basis tables.
- */
 const PolicyTable: React.FC<PolicyTableProps> = ({ title, data }) => (
     <div className="mt-8 mb-12">
         <h4 className="text-xl font-semibold mb-4 border-b pb-2 text-gray-800">{title}</h4>
@@ -219,9 +271,6 @@ interface GlossaryTableProps {
     data: GlossaryTerm[];
 }
 
-/**
- * Component for rendering the Personal Data Glossary.
- */
 const GlossaryTable: React.FC<GlossaryTableProps> = ({ data }) => (
     <div className="mt-8 border border-gray-200 rounded-lg overflow-hidden shadow-sm">
         {data.map((row: GlossaryTerm, index: number) => (
@@ -241,9 +290,6 @@ interface TOCProps {
     setIsMobileOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-/**
- * Sticky Table of Contents component for navigation.
- */
 const TOC: React.FC<TOCProps> = ({
     sections,
     activeId,
@@ -254,7 +300,6 @@ const TOC: React.FC<TOCProps> = ({
     const scrollToSection = (id: string) => {
         const element = document.getElementById(id);
         if (element) {
-            // Adjust scroll position to account for fixed header/spacing
             const offset = 80;
             const bodyRect = document.body.getBoundingClientRect().top;
             const elementRect = element.getBoundingClientRect().top;
@@ -266,13 +311,12 @@ const TOC: React.FC<TOCProps> = ({
                 behavior: 'smooth'
             });
             setActiveId(id);
-            setIsMobileOpen(false); // Close on mobile after click
+            setIsMobileOpen(false);
         }
     };
 
     return (
         <>
-            {/* Mobile TOC Button */}
             <button
                 className="fixed top-4 right-4 z-50 p-3 bg-gray-900 text-white rounded-full md:hidden shadow-xl"
                 onClick={() => setIsMobileOpen(!isMobileOpen)}
@@ -281,7 +325,6 @@ const TOC: React.FC<TOCProps> = ({
                 {isMobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
 
-            {/* TOC Panel */}
             <nav className={`fixed top-0 left-0 h-full w-full bg-white z-40 p-6 md:p-0 md:relative md:h-auto md:w-full md:block transition-transform duration-300 ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
                 <div className="md:sticky md:top-20 md:max-h-[calc(100vh-100px)] overflow-y-auto">
                     <h3 className="text-2xl font-bold mb-6 text-gray-900 md:hidden">Contents</h3>
@@ -327,19 +370,15 @@ export default function PolicyPage() {
     const [activeId, setActiveId] = useState<string>(POLICY_SECTIONS[0].id);
     const [isMobileOpen, setIsMobileOpen] = useState<boolean>(false);
 
-    // Type the ref map correctly: Record<string, HTMLElement | null>
     const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
 
-    // Smooth scrolling observer for highlighting the active TOC item
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach(entry => {
-                    // Check if the element is intersecting and its ID is valid
                     if (entry.isIntersecting && entry.intersectionRatio >= 0.2) {
                         const targetId = entry.target.id;
 
-                        // Find the main section or parent section ID
                         const mainSection = POLICY_SECTIONS.find(s => s.id === targetId);
 
                         if (mainSection) {
@@ -348,7 +387,6 @@ export default function PolicyPage() {
                             const parentSection = POLICY_SECTIONS.find(s =>
                                 s.subsections && s.subsections.some(sub => sub.id === targetId)
                             );
-                            // Set to the subsection ID if it's the most prominent element
                             if (parentSection) {
                                 setActiveId(targetId);
                             }
@@ -359,7 +397,6 @@ export default function PolicyPage() {
             { threshold: 0.2, rootMargin: '-80px 0px -50% 0px' }
         );
 
-        // Collect all section/subsection IDs for observation
         POLICY_SECTIONS.forEach(section => {
             const element = document.getElementById(section.id);
             if (element) {
@@ -384,8 +421,6 @@ export default function PolicyPage() {
         content: ReactNode;
     }
 
-    // --- Policy Content Rendering Helper ---
-    // Defined as a standard function for better compatibility
     const renderSection = ({ id, title, content }: SectionProps) => (
         <section
             id={id}
@@ -450,6 +485,9 @@ export default function PolicyPage() {
                 )
             })}
 
+            {/* Rest of the sections remain the same... */}
+            {/* I'll include section 2 as an example, but you should keep all other sections */}
+            
             {/* Section 2: Legal Basis & Purposes */}
             <section id="legal-basis" className="py-10 border-t-2 border-primary-100 bg-gradient-to-b from-white to-emerald-50/30">
                 <div className="max-w-5xl mx-auto">
@@ -459,16 +497,14 @@ export default function PolicyPage() {
                     </h2>
 
                     <p className="text-lg text-gray-700 leading-relaxed mb-10 max-w-4xl">
-                        We only collect and process your personal data when we have a <strong>lawful basis</strong> to do so. Below, we clearly explain <em>why</em> we use your data and <em>on what legal ground</em> — so you’re always in control.
+                        We only collect and process your personal data when we have a <strong>lawful basis</strong> to do so. Below, we clearly explain <em>why</em> we use your data and <em>on what legal ground</em> — so you're always in control.
                     </p>
 
-                    {/* Subsections 2.1 - 2.5 with Enhanced Tables */}
                     {POLICY_SECTIONS[1].subsections!.map((sub, index) => (
                         <div
                             id={sub.id}
                             key={sub.id}
-                            className={`mb-12 p-6 rounded-2xl shadow-sm bg-white border border-gray-100 hover:shadow-md transition-shadow duration-300 ${index % 2 === 1 ? 'bg-emerald-50/50' : ''
-                                }`}
+                            className={`mb-12 p-6 rounded-2xl shadow-sm bg-white border border-gray-100 hover:shadow-md transition-shadow duration-300 ${index % 2 === 1 ? 'bg-emerald-50/50' : ''}`}
                         >
                             <h3 className="text-2xl font-bold mb-5 text-gray-800 flex items-center">
                                 <span className="text-primary-600 font-mono text-sm bg-primary-100 px-3 py-1 rounded-full mr-3">
@@ -489,8 +525,7 @@ export default function PolicyPage() {
                                         {LEGAL_BASIS_TABLES[sub.id].map((row, i) => (
                                             <tr
                                                 key={i}
-                                                className={`border-b border-gray-100 ${i === LEGAL_BASIS_TABLES[sub.id].length - 1 ? '' : ''
-                                                    } hover:bg-gray-50 transition-colors`}
+                                                className={`border-b border-gray-100 hover:bg-gray-50 transition-colors`}
                                             >
                                                 <td className="p-4 text-gray-700">
                                                     <ul className="space-y-1">
@@ -515,7 +550,6 @@ export default function PolicyPage() {
                         </div>
                     ))}
 
-                    {/* After-Sales Note */}
                     <div className="mt-10 p-5 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800">
                         <p className="font-medium flex items-start">
                             <svg className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -529,15 +563,12 @@ export default function PolicyPage() {
                 </div>
             </section>
 
-            {/* --------------------------------------------------- */}
             {/* Section 3: Data We Collect */}
-            {/* --------------------------------------------------- */}
             {renderSection({
                 id: 'data-collect',
                 title: POLICY_SECTIONS[2].title,
                 content: (
                     <>
-                        {/* Intro */}
                         <p className="text-lg text-gray-700 leading-relaxed mb-6">
                             We only collect personal data that is **strictly necessary** for you to browse, shop, trade‑in, or contact support.
                         </p>
@@ -551,7 +582,6 @@ export default function PolicyPage() {
                             </p>
                         </div>
 
-                        {/* Two‑column core data */}
                         <div className="grid gap-8 md:grid-cols-2 mb-10">
                             <div>
                                 <h3 className="flex items-center text-xl font-bold text-gray-900 mb-4">
@@ -568,7 +598,7 @@ export default function PolicyPage() {
                                         'Promotion / survey / contest participation',
                                     ].map((item, i) => (
                                         <li key={i} className="flex items-start">
-                                            <span className="text-primary-600 mr-2">Checkmark</span>
+                                            <span className="text-primary-600 mr-2">✓</span>
                                             <span>{item}</span>
                                         </li>
                                     ))}
@@ -590,7 +620,7 @@ export default function PolicyPage() {
                                         'Fraud‑detection signals',
                                     ].map((item, i) => (
                                         <li key={i} className="flex items-start">
-                                            <span className="text-primary-600 mr-2">Checkmark</span>
+                                            <span className="text-primary-600 mr-2">✓</span>
                                             <span>{item}</span>
                                         </li>
                                     ))}
@@ -598,10 +628,7 @@ export default function PolicyPage() {
                             </div>
                         </div>
 
-                        {/* Special‑case cards */}
                         <div className="space-y-8">
-
-                            {/* Trade‑in */}
                             <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
                                 <h3 className="flex items-center text-xl font-bold text-gray-900 mb-3">
                                     <span className="flex-shrink-0 w-7 h-7 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-bold mr-3">
@@ -614,11 +641,10 @@ export default function PolicyPage() {
                                     Proof‑of‑address may be requested for carbon‑credit claims.
                                 </p>
                                 <p className="text-xs text-blue-800">
-                                    <strong>Deleted after 5 months.</strong>
+                                    <strong>Deleted after 5 months.</strong>
                                 </p>
                             </div>
 
-                            {/* Disputes */}
                             <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
                                 <h3 className="flex items-center text-xl font-bold text-gray-900 mb-3">
                                     <span className="flex-shrink-0 w-7 h-7 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-sm font-bold mr-3">
@@ -634,7 +660,6 @@ export default function PolicyPage() {
                                 </p>
                             </div>
 
-                            {/* Social Login */}
                             <div className="bg-purple-50 border border-purple-200 rounded-xl p-6">
                                 <h3 className="flex items-center text-xl font-bold text-gray-900 mb-3">
                                     <span className="flex-shrink-0 w-7 h-7 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-sm font-bold mr-3">
@@ -650,7 +675,6 @@ export default function PolicyPage() {
                                 </p>
                             </div>
 
-                            {/* Third‑party */}
                             <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-6">
                                 <h3 className="flex items-center text-xl font-bold text-gray-900 mb-3">
                                     <span className="flex-shrink-0 w-7 h-7 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-sm font-bold mr-3">
@@ -664,7 +688,6 @@ export default function PolicyPage() {
                             </div>
                         </div>
 
-                        {/* TL;DR */}
                         <div className="mt-10 p-6 bg-gray-50 rounded-xl border border-gray-200">
                             <h4 className="text-lg font-bold text-gray-900 mb-2">Quick Summary</h4>
                             <p className="text-sm text-gray-600">
@@ -679,22 +702,17 @@ export default function PolicyPage() {
                 ),
             })}
 
-            {/* --------------------------------------------------- */}
             {/* Section 4: Data Retention */}
-            {/* --------------------------------------------------- */}
             {renderSection({
                 id: 'data-retention',
                 title: POLICY_SECTIONS[3].title,
                 content: (
                     <>
-                        {/* Intro */}
                         <p className="text-lg text-gray-700 leading-relaxed mb-8">
                             Your data is kept **only as long as necessary** for the purpose it was collected, then securely deleted or anonymised.
                         </p>
 
-                        {/* KPI‑style cards */}
                         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-10">
-                            {/* 1. Purchases & Trade‑ins */}
                             <div className="group bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-lg hover:border-primary-300 transition-all duration-300">
                                 <h4 className="font-bold text-primary-600 mb-3 flex items-center">
                                     <span className="flex-shrink-0 w-7 h-7 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-xs font-bold mr-2">
@@ -704,13 +722,12 @@ export default function PolicyPage() {
                                 </h4>
 
                                 <div className="space-y-1">
-                                    <p className="text-2xl font-bold text-gray-900">3 years</p>
+                                    <p className="text-2xl font-bold text-gray-900">3 years</p>
                                     <p className="text-sm font-medium text-gray-600">
                                         from last contact
                                     </p>
                                 </div>
 
-                                {/* Subtle hover icon */}
                                 <div className="mt-4 flex justify-end">
                                     <svg
                                         className="w-5 h-5 text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -722,7 +739,6 @@ export default function PolicyPage() {
                                 </div>
                             </div>
 
-                            {/* 2. Marketing */}
                             <div className="group bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-lg hover:border-primary-300 transition-all duration-300">
                                 <h4 className="font-bold text-primary-600 mb-3 flex items-center">
                                     <span className="flex-shrink-0 w-7 h-7 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold mr-2">
@@ -732,13 +748,12 @@ export default function PolicyPage() {
                                 </h4>
 
                                 <div className="space-y-1">
-                                    <p className="text-2xl font-bold text-gray-900">3 years</p>
+                                    <p className="text-2xl font-bold text-gray-900">3 years</p>
                                     <p className="text-sm font-medium text-gray-600">
                                         from last contact
                                     </p>
                                 </div>
 
-                                {/* Subtle hover icon */}
                                 <div className="mt-4 flex justify-end">
                                     <svg
                                         className="w-5 h-5 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -751,7 +766,6 @@ export default function PolicyPage() {
                                 </div>
                             </div>
 
-                            {/* 3. Analytics */}
                             <div className="group bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-lg hover:border-primary-300 transition-all duration-300">
                                 <h4 className="font-bold text-primary-600 mb-3 flex items-center">
                                     <span className="flex-shrink-0 w-7 h-7 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-bold mr-2">
@@ -762,15 +776,14 @@ export default function PolicyPage() {
 
                                 <div className="space-y-1">
                                     <p className="text-2xl font-bold text-gray-900">
-                                        3 years <span className="text-gray-400 mx-1">→</span> 5 years
+                                        3 years <span className="text-gray-400 mx-1">→</span> 5 years
                                         <span className="block text-sm font-medium text-gray-600"> (pseudonymised)</span>
                                     </p>
                                     <p className="text-xs text-gray-500">
-                                        Audience stats: <strong className="text-primary-600">26 months</strong>
+                                        Audience stats: <strong className="text-primary-600">26 months</strong>
                                     </p>
                                 </div>
 
-                                {/* Optional visual cue */}
                                 <div className="mt-4 flex justify-end">
                                     <svg className="w-5 h-5 text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.414L11 9.586V6z" clipRule="evenodd" />
@@ -778,7 +791,6 @@ export default function PolicyPage() {
                                 </div>
                             </div>
 
-                            {/* 4. Fraud / Security */}
                             <div className="group bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-lg hover:border-primary-300 transition-all duration-300">
                                 <h4 className="font-bold text-primary-600 mb-3 flex items-center">
                                     <span className="flex-shrink-0 w-7 h-7 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xs font-bold mr-2">
@@ -792,11 +804,10 @@ export default function PolicyPage() {
                                         Until resolved
                                     </p>
                                     <p className="text-sm font-medium text-gray-600">
-                                        (max <strong className="text-primary-600">3 years</strong>)
+                                        (max <strong className="text-primary-600">3 years</strong>)
                                     </p>
                                 </div>
 
-                                {/* Subtle hover icon */}
                                 <div className="mt-4 flex justify-end">
                                     <svg
                                         className="w-5 h-5 text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -809,7 +820,6 @@ export default function PolicyPage() {
                             </div>
                         </div>
 
-                        {/* Legal‑hold call‑out */}
                         <div className="p-6 bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-xl flex items-start">
                             <svg className="w-6 h-6 text-amber-700 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
@@ -817,25 +827,23 @@ export default function PolicyPage() {
                             <div>
                                 <h4 className="font-bold text-amber-900 mb-1">Legal‑Hold Extension</h4>
                                 <p className="text-sm text-amber-800">
-                                    After the periods above we may retain data for up to <strong>10 years</strong> solely to meet statutory obligations (tax, accounting, litigation).
+                                    After the periods above we may retain data for up to <strong>10 years</strong> solely to meet statutory obligations (tax, accounting, litigation).
                                 </p>
                             </div>
                         </div>
 
-                        {/* Shorter‑period list */}
                         <div className="mt-8 p-6 bg-gray-50 border border-gray-200 rounded-xl">
                             <p className="font-semibold text-gray-800 mb-3">Shorter retention for sensitive items:</p>
                             <ul className="space-y-2 text-sm text-gray-700 list-disc ml-6">
                                 <li>
-                                    <strong>Bank documents / IBAN (Trade‑in)</strong> – <strong className="text-primary-600">5 months</strong>
+                                    <strong>Bank documents / IBAN (Trade‑in)</strong> – <strong className="text-primary-600">5 months</strong>
                                 </li>
                                 <li>
-                                    <strong>Customer‑service call recordings</strong> – <strong className="text-primary-600">6 months</strong>
+                                    <strong>Customer‑service call recordings</strong> – <strong className="text-primary-600">6 months</strong>
                                 </li>
                             </ul>
                         </div>
 
-                        {/* Trust badge */}
                         <div className="mt-10 text-center p-5 bg-primary-50 border border-primary-200 rounded-xl">
                             <p className="text-sm text-primary-800">
                                 <strong>All data is encrypted, regularly audited, and deleted automatically when no longer needed.</strong>
@@ -844,6 +852,7 @@ export default function PolicyPage() {
                     </>
                 ),
             })}
+
             {/* Section 5: Data Sharing */}
             {renderSection({
                 id: 'data-sharing',
@@ -856,7 +865,6 @@ export default function PolicyPage() {
 
                         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
 
-                            {/* 1. Sellers & Refurbishers */}
                             <div className="group p-6 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:border-primary-300">
                                 <h3 className="font-bold text-xl text-gray-900 mb-3 flex items-center">
                                     <span className="w-8 h-8 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-sm font-bold mr-3">
@@ -872,7 +880,6 @@ export default function PolicyPage() {
                                 </p>
                             </div>
 
-                            {/* 2. Carriers */}
                             <div className="group p-6 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:border-primary-300">
                                 <h3 className="font-bold text-xl text-gray-900 mb-3 flex items-center">
                                     <span className="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-sm font-bold mr-3">
@@ -885,7 +892,6 @@ export default function PolicyPage() {
                                 </p>
                             </div>
 
-                            {/* 3. Brokers & Insurers */}
                             <div className="group p-6 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:border-primary-300">
                                 <h3 className="font-bold text-xl text-gray-900 mb-3 flex items-center">
                                     <span className="w-8 h-8 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-sm font-bold mr-3">
@@ -898,7 +904,6 @@ export default function PolicyPage() {
                                 </p>
                             </div>
 
-                            {/* 4. Payment Providers */}
                             <div className="group p-6 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:border-primary-300">
                                 <h3 className="font-bold text-xl text-gray-900 mb-3 flex items-center">
                                     <span className="w-8 h-8 bg-teal-100 text-teal-600 rounded-lg flex items-center justify-center text-sm font-bold mr-3">
@@ -911,7 +916,6 @@ export default function PolicyPage() {
                                 </p>
                             </div>
 
-                            {/* 5. Sub-contractors */}
                             <div className="group p-6 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:border-primary-300">
                                 <h3 className="font-bold text-xl text-gray-900 mb-3 flex items-center">
                                     <span className="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center text-sm font-bold mr-3">
@@ -927,7 +931,6 @@ export default function PolicyPage() {
                                 </p>
                             </div>
 
-                            {/* 6. Authorities */}
                             <div className="group p-6 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:border-primary-300">
                                 <h3 className="font-bold text-xl text-gray-900 mb-3 flex items-center">
                                     <span className="w-8 h-8 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-sm font-bold mr-3">
@@ -942,7 +945,6 @@ export default function PolicyPage() {
 
                         </div>
 
-                        {/* Advertising Partners (Full Width) */}
                         <div className="mt-10 p-6 bg-gradient-to-r from-primary-50 to-emerald-50 border border-primary-200 rounded-xl">
                             <h3 className="font-bold text-xl text-gray-900 mb-3 flex items-center">
                                 <span className="w-8 h-8 bg-primary-100 text-primary-600 rounded-lg flex items-center justify-center text-sm font-bold mr-3">
@@ -966,7 +968,6 @@ export default function PolicyPage() {
                             </p>
                         </div>
 
-                        {/* Final Trust Statement */}
                         <div className="mt-10 p-6 bg-gray-50 rounded-xl border border-gray-200 text-center">
                             <p className="text-sm text-gray-600">
                                 Every partner is vetted, bound by <strong>GDPR-compliant contracts</strong>, and audited regularly. Your data is <strong>never sold</strong>.
@@ -975,46 +976,44 @@ export default function PolicyPage() {
                     </>
                 ),
             })}
+
             {/* Section 6: International Transfers */}
             {renderSection({
                 id: 'data-transfer',
                 title: POLICY_SECTIONS[5].title,
                 content: (
                     <>
-                        {/* Intro */}
                         <p className="text-lg text-gray-700 leading-relaxed mb-6">
                             Your data is <strong>primarily processed in Europe</strong> — but in some cases, we transfer it securely to trusted partners outside the EU.
                         </p>
 
-                        {/* Main Transfer Card */}
                         <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-6 mb-8 shadow-sm">
                             <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center">
                                 <span className="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-bold mr-3">
-                                    Globe
+                                    🌍
                                 </span>
                                 When & Why We Transfer Data
                             </h3>
                             <ul className="space-y-3 text-gray-700">
                                 <li className="flex items-start">
-                                    <span className="text-blue-600 mr-2">Checkmark</span>
+                                    <span className="text-blue-600 mr-2">✓</span>
                                     <strong>Customer support</strong> via global teams
                                 </li>
                                 <li className="flex items-start">
-                                    <span className="text-blue-600 mr-2">Checkmark</span>
+                                    <span className="text-blue-600 mr-2">✓</span>
                                     <strong>IT services & cloud hosting</strong> (e.g., AWS, Google Cloud)
                                 </li>
                                 <li className="flex items-start">
-                                    <span className="text-blue-600 mr-2">Checkmark</span>
+                                    <span className="text-blue-600 mr-2">✓</span>
                                     <strong>Social media platforms</strong> (Meta, Google) for ad performance
                                 </li>
                             </ul>
                         </div>
 
-                        {/* Non-EU Sellers */}
                         <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-8">
                             <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center">
                                 <span className="w-8 h-8 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-sm font-bold mr-3">
-                                    Shop
+                                    🛒
                                 </span>
                                 Orders from Non-EU Sellers
                             </h3>
@@ -1023,7 +1022,6 @@ export default function PolicyPage() {
                             </p>
                         </div>
 
-                        {/* Safeguards Callout */}
                         <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6 shadow-sm">
                             <h3 className="text-xl font-bold text-emerald-900 mb-3 flex items-center">
                                 <svg className="w-6 h-6 text-emerald-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -1053,11 +1051,10 @@ export default function PolicyPage() {
                                 </li>
                             </ul>
                             <p className="text-xs text-emerald-800 mt-4 italic">
-                                We only transfer what’s necessary — and never without legal safeguards.
+                                We only transfer what's necessary — and never without legal safeguards.
                             </p>
                         </div>
 
-                        {/* Trust Badge */}
                         <div className="mt-10 text-center p-5 bg-primary-50 border border-primary-200 rounded-xl">
                             <p className="text-sm text-primary-800 font-medium">
                                 All transfers comply with <strong>UK GDPR</strong> and <strong>EU GDPR</strong>. Your privacy travels safely.
@@ -1066,18 +1063,17 @@ export default function PolicyPage() {
                     </>
                 ),
             })}
+
             {/* Section 7: Your Rights */}
             {renderSection({
                 id: 'your-rights',
                 title: POLICY_SECTIONS[6].title,
                 content: (
                     <>
-                        {/* Intro */}
                         <p className="text-lg text-gray-700 leading-relaxed mb-8">
                             You have <strong>full control</strong> over your personal data. Below are your rights under <strong>UK GDPR</strong> and <strong>EU GDPR</strong> — and how to exercise them <strong>in seconds</strong>.
                         </p>
 
-                        {/* Rights Grid */}
                         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-10">
                             {[
                                 { icon: 'Eye', title: 'Access', desc: 'See all your data' },
@@ -1133,17 +1129,16 @@ export default function PolicyPage() {
                             ))}
                         </div>
 
-                        {/* How to Exercise */}
                         <div className="bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-200 rounded-xl p-6 mb-8">
                             <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                                 <span className="flex-shrink-0 w-8 h-8 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-sm font-bold mr-3">
-                                    Wrench
+                                    🔧
                                 </span>
                                 How to Exercise Your Rights (Instant Actions)
                             </h3>
                             <div className="space-y-5">
                                 <div className="flex items-start">
-                                    <span className="text-emerald-600 mr-3 mt-1">Checkmark</span>
+                                    <span className="text-emerald-600 mr-3 mt-1">✓</span>
                                     <div>
                                         <strong>Delete your account:</strong>{' '}
                                         <Link href="/account/profile" className="text-primary-600 hover:underline font-medium">
@@ -1152,7 +1147,7 @@ export default function PolicyPage() {
                                     </div>
                                 </div>
                                 <div className="flex items-start">
-                                    <span className="text-emerald-600 mr-3 mt-1">Checkmark</span>
+                                    <span className="text-emerald-600 mr-3 mt-1">✓</span>
                                     <div>
                                         <strong>Stop marketing:</strong> Unsubscribe link or{' '}
                                         <Link href="/account/profile" className="text-primary-600 hover:underline font-medium">
@@ -1161,7 +1156,7 @@ export default function PolicyPage() {
                                     </div>
                                 </div>
                                 <div className="flex items-start">
-                                    <span className="text-emerald-600 mr-3 mt-1">Checkmark</span>
+                                    <span className="text-emerald-600 mr-3 mt-1">✓</span>
                                     <div>
                                         <strong>Manage cookies:</strong>{' '}
                                         <Link href="/cookies" className="text-primary-600 hover:underline font-medium">
@@ -1170,7 +1165,7 @@ export default function PolicyPage() {
                                     </div>
                                 </div>
                                 <div className="flex items-start">
-                                    <span className="text-emerald-600 mr-3 mt-1">Checkmark</span>
+                                    <span className="text-emerald-600 mr-3 mt-1">✓</span>
                                     <div>
                                         <strong>Edit profile:</strong>{' '}
                                         <Link href="/account/profile" className="text-primary-600 hover:underline font-medium">
@@ -1179,19 +1174,18 @@ export default function PolicyPage() {
                                     </div>
                                 </div>
                                 <div className="flex items-start">
-                                    <span className="text-emerald-600 mr-3 mt-1">Checkmark</span>
+                                    <span className="text-emerald-600 mr-3 mt-1">✓</span>
                                     <div>
-                                        <strong>Block call recording:</strong> Say “No” when prompted
+                                        <strong>Block call recording:</strong> Say "No" when prompted
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Contact DPO */}
                         <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8">
                             <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center">
                                 <span className="flex-shrink-0 w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-bold mr-3">
-                                    Envelope
+                                    ✉️
                                 </span>
                                 Contact Our Data Protection Officer
                             </h3>
@@ -1209,7 +1203,6 @@ export default function PolicyPage() {
                             </p>
                         </div>
 
-                        {/* DPA Table */}
                         <div className="mt-10">
                             <h3 className="text-xl font-bold text-gray-900 mb-4">File a Complaint</h3>
                             <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm">
@@ -1220,8 +1213,7 @@ export default function PolicyPage() {
                                 {DP_AUTHORITIES.map((auth, i) => (
                                     <div
                                         key={i}
-                                        className={`grid grid-cols-1 sm:grid-cols-3 p-4 text-sm text-gray-700 ${i < DP_AUTHORITIES.length - 1 ? 'border-b border-gray-100' : ''
-                                            }`}
+                                        className={`grid grid-cols-1 sm:grid-cols-3 p-4 text-sm text-gray-700 ${i < DP_AUTHORITIES.length - 1 ? 'border-b border-gray-100' : ''}`}
                                     >
                                         <div className="font-semibold text-gray-900">{auth.country}</div>
                                         <div className="sm:col-span-2">
@@ -1240,7 +1232,6 @@ export default function PolicyPage() {
                             </div>
                         </div>
 
-                        {/* Final Trust */}
                         <div className="mt-10 text-center p-6 bg-primary-50 border border-primary-200 rounded-xl">
                             <p className="text-sm text-primary-800 font-medium">
                                 We respond to all valid requests within <strong>30 days</strong>. Your privacy is our priority.
@@ -1256,7 +1247,6 @@ export default function PolicyPage() {
                 title: POLICY_SECTIONS[7].title,
                 content: (
                     <>
-                        {/* Main Update Card */}
                         <div className="bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-200 rounded-xl p-6 shadow-sm">
                             <div className="flex items-start">
                                 <div className="flex-shrink-0 w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mr-4">
@@ -1270,7 +1260,7 @@ export default function PolicyPage() {
                                         This Privacy Policy may be updated to reflect changes in our data practices or new legal requirements.
                                     </p>
                                     <p className="text-gray-700 mt-3">
-                                        <strong className="text-emerald-800">For major changes:</strong> We’ll notify you via <strong>email</strong> or a <strong>prominent banner</strong> on the ISmart Platform.
+                                        <strong className="text-emerald-800">For major changes:</strong> We'll notify you via <strong>email</strong> or a <strong>prominent banner</strong> on the ISmart Platform.
                                     </p>
                                     <p className="text-sm text-emerald-700 mt-4 italic">
                                         You can always find the latest version right here.
@@ -1279,7 +1269,6 @@ export default function PolicyPage() {
                             </div>
                         </div>
 
-                        {/* Version & Last Updated */}
                         <div className="mt-8 text-center p-5 bg-white border border-gray-200 rounded-xl shadow-sm">
                             <p className="text-xs text-gray-500 leading-relaxed">
                                 <strong className="text-gray-700">Current Version:</strong> 2.1
@@ -1288,7 +1277,6 @@ export default function PolicyPage() {
                             </p>
                         </div>
 
-                        {/* Trust Seal */}
                         <div className="mt-8 text-center">
                             <p className="text-sm text-primary-800 font-medium">
                                 Your trust matters. We only update when it improves your privacy.
@@ -1304,19 +1292,16 @@ export default function PolicyPage() {
                 title: POLICY_SECTIONS[8].title,
                 content: (
                     <>
-                        {/* Intro */}
                         <p className="text-lg text-gray-700 leading-relaxed mb-8">
-                            Not sure what a term means? We’ve got you covered. Here’s a <strong>clear, plain-English guide</strong> to every key term in this policy.
+                            Not sure what a term means? We've got you covered. Here's a <strong>clear, plain-English guide</strong> to every key term in this policy.
                         </p>
 
-                        {/* Glossary Cards – Responsive Grid */}
                         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                             {GLOSSARY_TERMS.map((term, index) => (
                                 <div
                                     key={index}
                                     className="group bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md hover:border-primary-300 transition-all duration-300"
                                 >
-                                    {/* Term Title */}
                                     <h4 className="font-bold text-primary-600 mb-3 flex items-center">
                                         <span className="flex-shrink-0 w-7 h-7 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center text-xs font-bold mr-2">
                                             {term.term.charAt(0).toUpperCase()}
@@ -1324,12 +1309,10 @@ export default function PolicyPage() {
                                         {term.term}
                                     </h4>
 
-                                    {/* Definition */}
                                     <p className="text-sm text-gray-700 leading-relaxed">
                                         {term.definition}
                                     </p>
 
-                                    {/* Hover Tooltip Icon */}
                                     <div className="mt-4 flex justify-end">
                                         <svg
                                             className="w-5 h-5 text-primary-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -1347,27 +1330,22 @@ export default function PolicyPage() {
                             ))}
                         </div>
 
-                        {/* Trust Footer */}
                         <div className="mt-12 text-center p-6 bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-200 rounded-xl">
                             <p className="text-sm text-emerald-800 font-medium">
-                                <strong>Transparency is trust.</strong> We speak plainly so you’re always in control.
+                                <strong>Transparency is trust.</strong> We speak plainly so you're always in control.
                             </p>
                         </div>
                     </>
                 ),
             })}
-
         </div>
     );
 
     return (
         <div className="min-h-screen bg-white font-sans text-gray-800">
-
-            {/* Header/Breadcrumbs */}
             <header className="bg-white border-b border-gray-200 shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <nav className="flex items-center py-4" aria-label="Breadcrumb">
-                        {/* Home Link */}
                         <a
                             href="/"
                             className="group flex items-center text-sm font-medium text-gray-500 hover:text-primary-600 transition-colors duration-200"
@@ -1384,12 +1362,10 @@ export default function PolicyPage() {
                             Home
                         </a>
 
-                        {/* Separator */}
                         <span className="mx-3 text-gray-400" aria-hidden="true">
                             <ChevronRight className="w-4 h-4" />
                         </span>
 
-                        {/* Current Page */}
                         <span className="flex items-center text-sm font-semibold text-primary-600">
                             <svg
                                 className="w-4 h-4 mr-1.5 text-primary-600"
@@ -1406,7 +1382,6 @@ export default function PolicyPage() {
             </header>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-20">
 
-                {/* Policy Header */}
                 <div className="text-center md:text-left mb-12">
                     <h1 className="text-5xl font-extrabold text-gray-900 mb-4">Privacy policy</h1>
                     <div className="flex flex-col sm:flex-row justify-center md:justify-start space-y-3 sm:space-y-0 sm:space-x-4">
@@ -1415,7 +1390,6 @@ export default function PolicyPage() {
 
                 </div>
 
-                {/* Introductory Text */}
                 <div className="text-gray-700 max-w-4xl mx-auto md:mx-0 mb-12 border-b pb-8">
                     <p className="mb-4 leading-relaxed">
                         <strong className="text-primary-600">ISmart Limited</strong> (<strong>"ISmart"</strong>, <strong>"we"</strong>, <strong>"us"</strong>, or <strong>"our"</strong>) operates a trusted online marketplace dedicated to connecting certified refurbishers and professional sellers with environmentally conscious consumers who wish to purchase or trade in high-quality refurbished smartphones and mobile devices (collectively, the <strong>"Platform"</strong>).
@@ -1447,7 +1421,6 @@ export default function PolicyPage() {
                         This Policy works alongside our <strong>Cookie Policy</strong>, which you can review at any time via the footer of our website or within your account settings on the ISmart app and web platform.
                     </p>
 
-                    {/* Trust Badge */}
                     <div className="mt-8 flex items-center justify-start">
                         <svg className="w-6 h-6 text-emerald-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -1458,10 +1431,8 @@ export default function PolicyPage() {
                     </div>
                 </div>
 
-                {/* Main Content: TOC (Left) and Policy Text (Right) */}
                 <div className="flex flex-col md:flex-row gap-12">
 
-                    {/* Left Column: TOC */}
                     <div className="md:w-1/4 lg:w-1/5 flex-shrink-0">
                         <TOC
                             sections={POLICY_SECTIONS}
@@ -1472,14 +1443,11 @@ export default function PolicyPage() {
                         />
                     </div>
 
-                    {/* Right Column: Policy Details */}
                     <div className="md:w-3/4 lg:w-4/5">
                         {renderPolicyContent()}
                     </div>
                 </div>
             </div>
-
-            {/* Footer Placeholder */}
 
         </div>
     );
