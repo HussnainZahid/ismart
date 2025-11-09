@@ -7,236 +7,391 @@ import {
   Instagram,
   Linkedin,
   Mail,
-  CheckCircle,
-  Info,
-  HelpCircle,
-  Package,
-  Shield,
-  FileText,
-  Smartphone,
-  MapPin,
-  Phone,
-  Clock,
-  Award,
-  Users,
-  Leaf,
-  Heart,
-  ArrowUp,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 
-export default function Footer() {
+// --- Type Definitions ---
+interface FooterLink {
+  name: string;
+  href: string;
+}
+
+interface FooterGroup {
+  title: string;
+  links: FooterLink[];
+}
+
+interface PaymentMethod {
+  name: string;
+  url: string;
+  alt: string;
+}
+
+interface AppBadge {
+  appStore: string;
+  googlePlay: string;
+}
+
+interface FooterProps {
+  appName?: string;
+  footerGroups?: FooterGroup[];
+  paymentMethods?: PaymentMethod[];
+  appBadges?: AppBadge;
+  socialLinks?: {
+    linkedin?: string;
+    instagram?: string;
+    facebook?: string;
+    twitter?: string;
+  };
+}
+
+// --- Default Data ---
+const defaultFooterGroups: FooterGroup[] = [
+  {
+    title: 'About',
+    links: [
+      { name: 'About us', href: '/about' },
+      { name: 'Press', href: '/press' },
+      { name: 'Our impact', href: '/impact' },
+      { name: "We're hiring!", href: '/careers' },
+      { name: 'Trustpilot', href: '/trustpilot' },
+    ],
+  },
+  {
+    title: 'Help',
+    links: [
+      { name: 'Contact us', href: '/page-contact' },
+      { name: 'Help Center', href: '/help' },
+      { name: 'Delivery', href: '/delivery' },
+      { name: 'Returns and refunds', href: '/returns' },
+    ],
+  },
+  {
+    title: 'Services',
+    links: [
+      { name: 'Commercial warranty', href: '/warranty' },
+      { name: 'Insurances', href: '/insurance' },
+      { name: 'Sell old tech', href: '/sell' },
+      { name: 'Student and educator programme', href: '/student-program' },
+      { name: 'Sellers: Register to sell', href: '/register-seller' },
+      { name: 'Seller portal', href: '/seller-portal' },
+    ],
+  },
+  {
+    title: 'Resources',
+    links: [
+      { name: 'Tech Journal', href: '/journal' },
+      { name: 'Compare devices', href: '/compare' },
+      { name: 'Gift ideas', href: '/gift-ideas' },
+      { name: 'Black Friday', href: '/black-friday' },
+    ],
+  },
+  {
+    title: 'Law and order',
+    links: [
+      { name: 'Terms of Use', href: '/terms' },
+      { name: 'Terms of Sale', href: '/sale-terms' },
+      { name: 'Trade-in Terms and Conditions', href: '/tradein-terms' },
+      { name: 'Cookies and privacy settings', href: '/cookies' },
+      { name: 'Data protection', href: '/data-protection' },
+      { name: 'Other legal information', href: '/legal-info' },
+      { name: 'Legal notices', href: '/notices' },
+      { name: 'Report illicit content', href: '/page-submit' },
+    ],
+  },
+];
+
+const defaultPaymentMethods: PaymentMethod[] = [
+  { name: 'Visa', url: 'visa.png', alt: 'Visa' },
+  { name: 'Mastercard', url: '/mastercard.png', alt: 'Mastercard' },
+
+  { name: 'PayPal', url: '/paypal.png', alt: 'PayPal' },
+
+  { name: 'Apple Pay', url: '/apple_pay.png', alt: 'Apple Pay' },
+  { name: 'Google Pay', url: '/google_pay.png', alt: 'Google Pay' },
+  { name: 'Klarna', url: '/klarna.svg', alt: 'Klarna' },
+];
+
+const defaultAppBadges: AppBadge = {
+  appStore: '/apple-store.png',
+  googlePlay: '/google-play.png'
+};
+
+// --- Helper Components ---
+const SocialIcon = ({
+  Icon,
+  label,
+  href
+}: {
+  Icon: React.ElementType;
+  label: string;
+  href: string;
+}) => (
+  <a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 text-gray-700 hover:bg-gray-400 transition-colors duration-200"
+    aria-label={label}
+  >
+    <Icon className="w-5 h-5" />
+  </a>
+);
+
+export default function Footer({
+  appName = "ISmart",
+  footerGroups = defaultFooterGroups,
+  paymentMethods = defaultPaymentMethods,
+  appBadges = defaultAppBadges,
+  socialLinks = {
+    linkedin: '#',
+    instagram: '#',
+    facebook: '#',
+    twitter: '#'
+  }
+}: FooterProps) {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (!email) return setError("Email is required");
-    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!valid.test(email)) return setError("Enter a valid email");
+
+    if (!email.trim()) {
+      setError("Email is required");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setSubmitted(true);
-    setEmail("");
-    setLoading(false);
-    setTimeout(() => setSubmitted(false), 3000);
+
+    try {
+      // Replace with your actual API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      setSubmitted(true);
+      setEmail("");
+
+      setTimeout(() => setSubmitted(false), 4000);
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
-
-  const sections = [
-    {
-      title: "Company",
-      icon: Info,
-      links: [
-        { label: "About us", href: "/about" },
-        { label: "Press & Media", href: "/press" },
-        { label: "Sustainability", href: "/impact" },
-        { label: "Careers", href: "/careers" },
-      ],
-    },
-    {
-      title: "Support",
-      icon: HelpCircle,
-      links: [
-        { label: "Contact Support", href: "/contact" },
-        { label: "Help Center", href: "/help" },
-        { label: "Shipping Info", href: "/delivery" },
-        { label: "Returns & Refunds", href: "/returns" },
-      ],
-    },
-    {
-      title: "Services",
-      icon: Package,
-      links: [
-        { label: "Extended Warranty", href: "/warranty" },
-        { label: "Trade-In Program", href: "/sell" },
-        { label: "Student Discount", href: "/students" },
-      ],
-    },
-    {
-      title: "Legal",
-      icon: Shield,
-      links: [
-        { label: "Terms of Service", href: "/terms" },
-        { label: "Privacy Policy", href: "/privacy" },
-        { label: "Cookies", href: "/cookies" },
-      ],
-    },
-  ];
-
-  const stats = [
-    { icon: Users, value: "2M+", label: "Happy Customers" },
-    { icon: Smartphone, value: "500K+", label: "Devices Sold" },
-    { icon: Leaf, value: "15K+", label: "Tons CO₂ Saved" },
-    { icon: Award, value: "4.8/5", label: "Customer Rating" },
-  ];
+  const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gray-950 text-gray-300">
-      {/* Back to top */}
-      <button
-        onClick={scrollToTop}
-        className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 text-white py-4 flex items-center justify-center gap-2 text-sm font-semibold transition"
-      >
-        <ArrowUp className="w-4 h-4" />
-        Back to top
-      </button>
+    <footer className="bg-white text-gray-900 border-t border-gray-200">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
 
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
-          {stats.map(({ icon: Icon, value, label }) => (
-            <div
-              key={label}
-              className="text-center bg-gray-900/50 rounded-2xl p-6 border border-gray-800 hover:border-purple-500/40 transition"
-            >
-              <Icon className="w-6 h-6 text-purple-400 mx-auto mb-2" />
-              <p className="text-2xl font-bold text-white">{value}</p>
-              <p className="text-sm text-gray-400">{label}</p>
+        {/* TOP SECTION: Newsletter */}
+        <div className="py-12 border-b border-gray-200">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8">
+
+            {/* Left: Headline and Description */}
+            <div className="lg:max-w-md">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                Stay in the loop with hot drops
+              </h2>
+              <p className="text-sm text-gray-700 leading-relaxed">
+                Be the first to know about new arrivals, exclusive deals, and tech news that matters.
+              </p>
             </div>
-          ))}
-        </div>
 
-        {/* Newsletter */}
-        <div className="text-center mb-16">
-          <h3 className="text-3xl font-bold text-white mb-3">
-            Get Exclusive Tech Deals
-          </h3>
-          <p className="text-gray-400 mb-6">
-            Join 100,000+ subscribers and get access to early offers.
-          </p>
+            {/* Right: Form */}
+            <div className="lg:flex-1 lg:max-w-xl">
+              {submitted ? (
+                <div className="flex items-center gap-2 text-green-700 bg-green-50 border border-green-200 px-4 py-3 rounded-lg">
+                  <span className="text-sm font-medium">Successfully subscribed!</span>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <input
+                      type="email"
+                      placeholder="Email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      disabled={loading}
+                      className={`w-full px-4 py-3 pr-12 border ${error ? 'border-red-400' : 'border-gray-300'
+                        } rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm`}
+                    />
+                    <Mail className="w-5 h-5 text-gray-400 absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" />
+                  </div>
+                  <button
+                    onClick={handleSubmit}
+                    disabled={loading}
+                    className="px-6 py-3 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors duration-200 disabled:opacity-50 whitespace-nowrap"
+                  >
+                    {loading ? "Signing up..." : "Sign up"}
+                  </button>
+                </div>
+              )}
 
-          {submitted ? (
-            <div className="flex items-center justify-center gap-2 text-green-400 bg-green-500/10 border border-green-500/30 px-4 py-3 rounded-lg">
-              <CheckCircle className="w-5 h-5" />
-              Successfully subscribed!
-            </div>
-          ) : (
-            <form
-              onSubmit={handleSubmit}
-              className="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto"
-            >
-              <div className="flex-1 relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  disabled={loading}
-                  className={`w-full pl-10 pr-4 py-3 rounded-lg bg-gray-900 border ${
-                    error ? "border-red-500" : "border-gray-700"
-                  } text-gray-200 placeholder-gray-500 focus:outline-none focus:border-purple-500`}
-                />
-                {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
+              {error && <p className="text-red-600 text-xs mt-2">{error}</p>}
+
+              {/* Learn More Collapsible */}
+              <div className="mt-4">
+                <button
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="flex items-center gap-1 text-xs text-gray-700 hover:text-gray-900 font-medium"
+                >
+                  {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                  Learn more
+                </button>
+
+                {isExpanded && (
+                  <div className="mt-3 text-xs text-gray-600 space-y-2 leading-relaxed">
+                    <p>
+                      By subscribing, you agree to receive our promotional communications via email. You can unsubscribe at any time using the link in any of our marketing emails, or request to access, rectify, or delete your data.
+                    </p>
+                    <p>
+                      For more details, please refer to our{' '}
+                      <a href="/privacy" className="underline hover:text-gray-900">privacy policy</a>.
+                    </p>
+                    <p>
+                      A non-cumulative promotional code will be sent by email following newsletter registration. It is valid for a minimum order of £250 and is usable for 1 month from the date of receipt.
+                    </p>
+                  </div>
+                )}
               </div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-50"
-              >
-                {loading ? "Subscribing..." : "Subscribe"}
-              </button>
-            </form>
-          )}
+            </div>
+          </div>
         </div>
 
-        {/* Footer Links */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-10 mb-12">
-          {/* Brand */}
-          <div className="lg:col-span-2">
-            <h4 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
-              <Smartphone className="w-5 h-5 text-purple-500" /> ISmart
-            </h4>
-            <p className="text-gray-400 mb-4 text-sm leading-relaxed">
-              Your trusted source for premium refurbished tech. Save money and
-              reduce e-waste without compromise.
-            </p>
-            <ul className="space-y-2 text-sm">
-              <li className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-purple-500" /> London, UK
-              </li>
-              <li className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-purple-500" />
-                <a href="tel:+442012345678" className="hover:text-white">
-                  +44 20 1234 5678
-                </a>
-              </li>
-              <li className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-purple-500" />
-                <a href="mailto:hello@ismart.com" className="hover:text-white">
-                  hello@ismart.com
-                </a>
-              </li>
-              <li className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-purple-500" /> Mon–Fri: 9AM–6PM
-              </li>
-            </ul>
-          </div>
+        {/* MIDDLE SECTION: Navigation Columns */}
+        <div className="py-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
 
-          {sections.map(({ title, icon: Icon, links }) => (
-            <div key={title}>
-              <h5 className="text-white font-semibold mb-3 flex items-center gap-2">
-                <Icon className="w-4 h-4 text-purple-400" /> {title}
-              </h5>
-              <ul className="space-y-2 text-sm">
-                {links.map((link) => (
-                  <li key={link.label}>
+          {/* Footer Link Groups */}
+          {footerGroups.map((group) => (
+            <div key={group.title}>
+              <h3 className="text-base font-bold text-gray-900 mb-4">
+                {group.title}
+              </h3>
+              <ul className="space-y-2">
+                {group.links.map((link) => (
+                  <li key={link.name}>
                     <a
                       href={link.href}
-                      className="text-gray-400 hover:text-white transition"
+                      className="text-sm text-gray-700 hover:text-gray-900 transition-colors duration-150"
                     >
-                      {link.label}
+                      {link.name}
                     </a>
                   </li>
                 ))}
               </ul>
+
+              {/* Payment Methods in Services Column */}
+              {group.title === 'Services' && (
+                <div className="mt-6">
+                  <a href="/payments" className="text-sm font-semibold text-gray-900 mb-3 underline hover:text-gray-700 transition-colors">
+                    Payments 100% secured
+                  </a>
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {paymentMethods.map((method) => (
+                      <div
+                        key={method.name}
+                        className="w-12 h-8 bg-white border border-gray-200 rounded flex items-center justify-center hover:border-gray-300 transition-colors"
+                        title={method.name}
+                      >
+                        <img
+                          src={method.url}
+                          alt={method.alt}
+                          className="max-w-full max-h-full object-contain p-1"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           ))}
-        </div>
 
-        {/* Social & Footer Bottom */}
-        <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-6 text-sm">
-          <p className="text-gray-400 text-center md:text-left">
-            © 2025 <span className="font-semibold text-white">ISmart</span>. All
-            rights reserved.
-          </p>
-
-          <div className="flex gap-3">
-            {[Twitter, Facebook, Instagram, Linkedin].map((Icon, i) => (
-              <a
-                key={i}
-                href="#"
-                className="w-10 h-10 flex items-center justify-center bg-gray-900 border border-gray-800 rounded-full hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 transition"
-              >
-                <Icon className="w-5 h-5 text-gray-400 hover:text-white" />
-              </a>
-            ))}
+          {/* B Corp Badge Column */}
+          <div className="flex flex-col items-center lg:items-start">
+            <a
+              href="/b-corp-certification"
+              className="w-20 h-20 border-2 border-gray-900 rounded-full flex items-center justify-center mb-2 hover:border-gray-700 transition-colors"
+              title="Certified B Corporation"
+            >
+              <div className="text-center">
+                <div className="text-3xl font-bold">B</div>
+                <div className="text-[8px] font-semibold">Certified</div>
+                <div className="text-[8px] font-semibold">Corporation</div>
+              </div>
+            </a>
           </div>
         </div>
+
+        {/* BOTTOM BAR */}
+        <div className="py-6 border-t border-gray-200">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+
+            {/* Left: Copyright and Social Icons */}
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <p className="text-sm text-gray-700">
+                © {currentYear} {appName}
+              </p>
+              <div className="flex gap-2">
+                {socialLinks.linkedin && <SocialIcon Icon={Linkedin} label="LinkedIn" href={socialLinks.linkedin} />}
+                {socialLinks.facebook && <SocialIcon Icon={Facebook} label="Facebook" href={socialLinks.facebook} />}
+                {socialLinks.instagram && <SocialIcon Icon={Instagram} label="Instagram" href={socialLinks.instagram} />}
+              </div>
+            </div>
+
+            {/* Right: App Store Badges */}
+            <div className="flex gap-3">
+              <a
+                href="https://play.google.com/store"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block hover:opacity-80 transition-opacity"
+              >
+                <img
+                  src={appBadges.googlePlay}
+                  alt="Get it on Google Play"
+                  className="h-10 w-auto"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.outerHTML = '<div class="bg-black text-white px-4 py-2 rounded text-xs h-10 flex items-center">Google Play</div>';
+                  }}
+                />
+              </a>
+              <a
+                href="https://apps.apple.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block hover:opacity-80 transition-opacity"
+              >
+                <img
+                  src={appBadges.appStore}
+                  alt="Download on the App Store"
+                  className="h-10 w-auto"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.outerHTML = '<div class="bg-black text-white px-4 py-2 rounded text-xs h-10 flex items-center">App Store</div>';
+                  }}
+                />
+              </a>
+            </div>
+          </div>
+        </div>
+
       </div>
     </footer>
   );

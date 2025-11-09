@@ -1,3 +1,5 @@
+import Header from '@/components/layout/header/header';
+import Footer from '@/components/layout/footer/footer';
 import Hero from '../components/home/Hero';
 import FeaturedProducts from '../components/home/FeaturedProducts';
 import Sustainability from '../components/home/Sustainability';
@@ -11,21 +13,23 @@ import Products from '../components/home/Products';
 
 
 
+
 export default function Home() {
   return (
     <>
+      <Header />
       <FeaturedProducts />
       <Hero />
       <Sustainability />
-      <Products/>
+      <Products />
       <Testimonials />
-      <Topbrands/>
+      <Topbrands />
       <Refurbished />
       <Tradein />
       <Newsletter />
 
       <BuybackCTA />
-
+      <Footer />
     </>
   );
 }

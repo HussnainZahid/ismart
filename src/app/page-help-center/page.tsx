@@ -1,4 +1,4 @@
-import Layout from '@/components/layout/layout';
+
 import HelpContent from './HelpContent';
 
 export const metadata = {
@@ -8,8 +8,8 @@ export const metadata = {
 
 export default function HelpCenterPage() {
   return (
-    <Layout breadcrumbTitle="Help Centre">
-      <HelpContent />
-    </Layout>
+
+    <HelpContent />
+
   );
 }
