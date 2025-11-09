@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, CheckCircle, RotateCcw, CreditCard, Smartphone, Zap, Camera, Key, Trash2, MapPin, TrendingUp, Cpu } from 'lucide-react';
 
 // --- Interface Definitions for Data Structures and Props ---
@@ -50,7 +50,6 @@ interface ProductCardProps {
 // --- Placeholder Data ---
 
 const shopCategories: ShopCategory[] = [
-  // Using placeholder images for categories but setting them to match the lime-100 background style
   { name: 'iPhone', image: 'https://placehold.co/180x250/d2ff7b/000000?text=iPhone+15' },
   { name: 'Samsung Galaxy', image: 'https://placehold.co/180x250/d2ff7b/000000?text=Galaxy+S24' },
   { name: 'Google Pixel', image: 'https://placehold.co/180x250/d2ff7b/000000?text=Pixel+8' },
@@ -86,8 +85,9 @@ const repairSteps: RepairStep[] = [
   },
 ];
 
+// Feature details are keyed by number (0-5)
 const featureDetails: { [key: number]: { label: string, detail: string, icon: React.ReactNode } } = {
-  0: { label: "Scroll up", detail: "Start your inspection journey here.", icon: <TrendingUp size={20} /> },
+  0: { label: "Scroll up", detail: "Start your inspection journey here. Scroll to reveal the inspection point.", icon: <TrendingUp size={20} /> },
   1: { label: "SIM and/or memory card reader", detail: "We ensure all card trays eject smoothly and the contacts read cards correctly.", icon: <Key size={20} /> },
   2: { label: "Data deletion", detail: "All devices undergo a professional data wipe, ensuring your privacy is 100% protected before any refurbishment begins.", icon: <Trash2 size={20} /> },
   3: { label: "Chargers and/or cables", detail: "All charging ports are meticulously cleaned and tested. We verify both wired and wireless charging capabilities.", icon: <Zap size={20} /> },
@@ -113,27 +113,14 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ title, content }) => {
         </svg>
       </button>
       {isOpen && (
-        <div className="pb-5 pr-6 text-gray-600 text-base animate-fadeIn">
+        // Added a key to force re-render/animation on open/close for smoother effect
+        <div key={title} className="pb-5 pr-6 text-gray-600 text-base animate-fadeIn">
           <p>{content}</p>
         </div>
       )}
     </div>
   );
 };
-
-// CSS animation for smooth reveal
-const style = document.createElement('style');
-style.innerHTML = `
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-.animate-fadeIn {
-    animation: fadeIn 0.3s ease-out;
-}
-`;
-document.head.appendChild(style);
-
 
 const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon }) => (
   <div className="p-5 bg-white rounded-2xl shadow-xl flex items-start space-x-4 border border-gray-100">
@@ -187,20 +174,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => (
 
 // --- Main Component ---
 
-const featureLabels = Object.values(featureDetails).map(d => d.label);
-
 export default function App() {
   const [activeStep, setActiveStep] = useState(3); // Start at Chargers (index 3)
 
-  const handleScroll = (direction: 'up' | 'down') => {
+  const handleScroll = useCallback((direction: 'up' | 'down') => {
     setActiveStep((prevStep) => {
+      // The actual feature steps are 1 to 5. 0 is the instructional text.
       if (direction === 'up') {
         return Math.max(1, prevStep - 1); // Stop at 1 (first actual feature)
       } else {
         return Math.min(5, prevStep + 1); // Stop at 5 (last feature)
       }
     });
-  };
+  }, []);
 
   const currentFeature = featureDetails[activeStep] || featureDetails[3];
 
@@ -221,7 +207,7 @@ export default function App() {
         </div>
       </header>
 
-      {/* Section 1: Top Categories & Accessories (1.png) */}
+      {/* Section 1: Top Categories & Accessories */}
       <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-white">
         <h2 className="text-3xl font-bold text-gray-900 mb-8">Shop our most wanted</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
@@ -252,7 +238,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* Section 2: Bestsellers (2.png) */}
+      {/* Section 2: Bestsellers */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-end mb-8">
@@ -286,7 +272,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* Section 3: Feature Banner (2.png bottom) */}
+      {/* Section 3: Feature Banner */}
       <section className="py-12 bg-lime-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -298,7 +284,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* Section 4: Tested. Perfected. Refurbished. (3.png) */}
+      {/* Section 4: Tested. Perfected. Refurbished. (Interactive Feature List) */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader title="Tested. Perfected. Refurbished." />
@@ -306,21 +292,32 @@ export default function App() {
           <div className="flex flex-col lg:flex-row items-center justify-center lg:space-x-12">
             {/* Scrollable Feature List */}
             <div className="w-full lg:w-1/3 space-y-3 mb-10 lg:mb-0">
-              {Object.values(featureDetails).map(({ label, icon }, index) => (
-                <div
-                  key={index}
-                  className={`flex items-center space-x-4 p-4 rounded-xl transition-all duration-300 cursor-pointer ${index === activeStep ? 'bg-indigo-600 shadow-lg text-white font-semibold' : 'text-gray-900 hover:bg-gray-100'
-                    }`}
-                  onClick={() => {
-                    if (index > 0) setActiveStep(index);
-                  }}
-                >
-                  <div className={`p-2 rounded-full ${index === activeStep ? 'bg-white text-indigo-600' : 'bg-gray-200 text-gray-700'}`}>
-                    {icon}
+              {Object.entries(featureDetails).map(([key, { label, icon }]) => {
+                const featureIndex = parseInt(key, 10);
+                const isActive = featureIndex === activeStep;
+                const isInstruction = featureIndex === 0; // Index 0 is just a prompt
+
+                return (
+                  <div
+                    key={key} // Use the stable key (0, 1, 2...)
+                    className={`flex items-center space-x-4 p-4 rounded-xl transition-all duration-300 ${
+                      isActive
+                        ? 'bg-indigo-600 shadow-lg text-white font-semibold'
+                        : isInstruction
+                          ? 'text-gray-400 cursor-default' // Make instruction item non-interactive
+                          : 'text-gray-900 hover:bg-gray-100 cursor-pointer'
+                      }`}
+                    onClick={() => {
+                      if (!isInstruction) setActiveStep(featureIndex);
+                    }}
+                  >
+                    <div className={`p-2 rounded-full ${isActive ? 'bg-white text-indigo-600' : 'bg-gray-200 text-gray-700'}`}>
+                      {icon}
+                    </div>
+                    <span className="text-lg">{label}</span>
                   </div>
-                  <span className="text-lg">{label}</span>
-                </div>
-              ))}
+                );
+              })}
               <div className="flex justify-between pt-4">
                 <button
                   onClick={() => handleScroll('up')}
@@ -361,7 +358,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* Section 5: Stop Fast Tech - Stats (4.png) */}
+      {/* Section 5: Stop Fast Tech - Stats */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-5xl font-extrabold text-gray-900 mb-4">Let's end fast tech.</h2>
@@ -371,7 +368,7 @@ export default function App() {
           <div className="flex justify-center my-12">
             <div className="w-full max-w-4xl h-[400px] bg-gray-900 rounded-3xl flex items-center justify-center relative overflow-hidden">
               <img
-                src="uploaded:4.png-70a06579-e981-45a0-9481-94a2ae764335"
+                src="https://placehold.co/800x400/222/FFF?text=How+many+upgrades+do+we+have+left%3F" // Changed to reliable placeholder
                 alt="Pile of old tech and batteries"
                 className="object-cover w-full h-full opacity-70"
                 onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
@@ -381,7 +378,6 @@ export default function App() {
               <div className="absolute text-white text-center p-6">
                 <div className="text-5xl md:text-6xl font-extrabold italic mb-4 drop-shadow-lg leading-tight">How many upgrades do we have left?</div>
                 <button className="text-white hover:text-red-400 mt-4 transition-colors">
-                  {/* Using a simple icon for effect */}
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mx-auto" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" /></svg>
                 </button>
               </div>
@@ -407,7 +403,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* Section 6: Action & Latest News (4.png) */}
+      {/* Section 6: Action & Latest News */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader title="Ready to end fast tech?" />
@@ -439,7 +435,13 @@ export default function App() {
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Latest news</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {['Why breaking up with fast tech is crucial for the...', 'Get political! Support your right to repair', 'Why we need a right to repair movement', 'Why you can\'t always update your phone'].map((title, index) => {
-              const imageMap = ['uploaded:a.png-01f17066-3909-4dbd-a297-4a48474d2660', 'uploaded:b.png-22e75bce-43c4-4269-a0bc-432fc773c88a', 'uploaded:c.png-f395aac4-46ba-4082-9e2e-43cd975883d0', 'uploaded:d.png-51d28af4-48f6-49fb-af2e-9ad76e167bc6'];
+              // Replaced uploaded: IDs with stable placeholders for consistency
+              const imageMap = [
+                'https://placehold.co/300x160/d2ff7b/000000?text=Article+1', 
+                'https://placehold.co/300x160/d2ff7b/000000?text=Article+2', 
+                'https://placehold.co/300x160/d2ff7b/000000?text=Article+3', 
+                'https://placehold.co/300x160/d2ff7b/000000?text=Article+4'
+              ];
               return (
                 <a key={index} href={`/news/${index}`} className="block group">
                   <div className="bg-gray-100 rounded-xl h-40 overflow-hidden mb-3 shadow-md">
@@ -461,7 +463,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* Section 7: Repair, Reuse, Refurbish (3.png) */}
+      {/* Section 7: Repair, Reuse, Refurbish */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader title="The three pillars of sustainable tech" />
@@ -470,7 +472,8 @@ export default function App() {
               <div key={index} className="p-6 bg-white rounded-2xl shadow-xl border border-gray-100 group">
                 <div className="h-48 w-full bg-indigo-50 rounded-xl mb-4 overflow-hidden">
                   <img
-                    src={step.image}
+                    // Placeholder fallback for CMS IDs
+                    src={`https://placehold.co/350x200/eee/333?text=${step.title}`}
                     alt={step.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
@@ -496,7 +499,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* Section 8: FAQ Accordion (3.png) */}
+      {/* Section 8: FAQ Accordion */}
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader title="Self-repair doesn't have to be intimidating" />
@@ -529,7 +532,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* Section 9: Popular Searches (6.png) */}
+      {/* Section 9: Popular Searches */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Searches so popular - you can't sit with them</h2>
