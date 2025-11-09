@@ -1,4 +1,4 @@
-import Layout from '@/components/layout/layout';
+
 import LoginContent from './LoginContent';
 
 export const metadata = {
@@ -8,10 +8,10 @@ export const metadata = {
 
 export default function Page() {
   return (
-    <Layout breadcrumbTitle="Login">
+    
       <div className="min-h-screen flex items-center justify-center">
         <LoginContent />
       </div>
-    </Layout>
+    
   );
 }
